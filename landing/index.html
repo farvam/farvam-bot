@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>فَروَم</title>
 <meta name="description" content="فَروَم؛ اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر. حسابداری وزنی و ریالی، سند تصویری ترازو، اتاق معاملات با برند شما و مال‌گردانی خودکار.">
+<meta property="og:url" content="https://goldcertificatin.ir">
 <meta property="og:title" content="فَروَم | از ثبت اولین سوت تا بستن تراز سالانه">
 <meta property="og:description" content="در بازار طلا، هر خطا با وزن طلا تسویه می‌شود. فَروَم گاوصندوق، معاملات، پرسنل و حسابداری شما را در یک زنجیره به هم وصل می‌کند.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,7 +61,9 @@ p{margin:0}
 .btn-gold{background:var(--gold-bright);color:#1B1606}
 .btn-gold:hover{background:#E8C46A}
 .btn-ghost{background:transparent;color:var(--on-velvet);box-shadow:inset 0 0 0 1px rgba(243,238,223,.35)}
+.nav-tel{color:var(--on-velvet);text-decoration:none;font-weight:700;white-space:nowrap}
 @media (max-width:820px){.nav ul{display:none}}
+@media (max-width:480px){.nav-tel{display:none}}
 
 /* hero */
 .hero{background:
@@ -223,8 +226,12 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
       <li><a href="#roles">برای صنف شما</a></li>
       <li><a href="#security">امنیت</a></li>
       <li><a href="#faq">پرسش‌ها</a></li>
+      <li><a href="https://goldcertificatin.ir" target="_blank" rel="noopener">ورود به پنل</a></li>
     </ul>
-    <a class="btn btn-gold" href="#demo">درخواست دمو</a>
+    <div style="display:flex;align-items:center;gap:14px">
+      <a class="nav-tel num" href="tel:+989138143073" dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳</a>
+      <a class="btn btn-gold" href="#demo">درخواست دمو</a>
+    </div>
   </div>
 </header>
 
@@ -459,14 +466,16 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 </section>
 </main>
 
-<footer><div class="wrap"><span>فَروَم · اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر</span><span>از ثبت اولین سوت تا بستن تراز سالانه</span></div></footer>
+<footer><div class="wrap"><span>فَروَم · اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر</span><span>اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم · <a href="tel:+989138143073" dir="ltr" style="text-decoration:none">۰۹۱۳ ۸۱۴ ۳۰۷۳</a></span></div></footer>
 
 <script>
 /* تنظیمات تماس: این‌ها را با اطلاعات واقعی پر کنید. خالی بماند، نمایش داده نمی‌شود. */
 var CONTACT = {
-  phone: "",      // مثال: "۰۲۱-۱۲۳۴۵۶۷۸"
-  whatsapp: "",   // فقط رقم با کد کشور، مثال: "989121234567"
-  telegram: ""    // نام کاربری بدون @، مثال: "farvam_support"
+  phone: "۰۹۱۳ ۸۱۴ ۳۰۷۳",
+  whatsapp: "989138143073",
+  telegram: "",   // نام کاربری بدون @، مثال: "farvam_support"
+  site: "goldcertificatin.ir",
+  address: "اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم"
 };
 
 var ROLES = {
@@ -530,9 +539,11 @@ var ROLES = {
   });
 
   var c=document.getElementById("contact"), rows=[];
-  if(CONTACT.phone) rows.push("<div><span>تلفن:</span><b class=\"num\">"+esc(CONTACT.phone)+"</b></div>");
+  if(CONTACT.phone) rows.push("<div><span>تلفن و واتساپ:</span><a class=\"num\" href=\"tel:+989138143073\" dir=\"ltr\" style=\"font-weight:800;font-size:1.25rem;text-decoration:none\">"+esc(CONTACT.phone)+"</a></div>");
+  if(CONTACT.site) rows.push("<div><span>سایت و پنل:</span><a dir=\"ltr\" style=\"font-weight:700\" target=\"_blank\" rel=\"noopener\" href=\"https://"+esc(CONTACT.site)+"\">"+esc(CONTACT.site)+"</a></div>");
+  if(CONTACT.address) rows.push("<div><span>دفتر:</span><b>"+esc(CONTACT.address)+"</b></div>");
   if(CONTACT.telegram) rows.push("<div><span>تلگرام:</span><b dir=\"ltr\">@"+esc(CONTACT.telegram)+"</b></div>");
-  if(CONTACT.whatsapp) rows.push("<div><span>واتساپ:</span><b dir=\"ltr\">+"+esc(CONTACT.whatsapp)+"</b></div>");
+
   c.innerHTML=rows.join("");
 
   var f=document.getElementById("demo-form");

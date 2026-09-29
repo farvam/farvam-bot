@@ -6,41 +6,42 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Vazirmatn:wght@400;500;700;800;900&display=swap">
 <style>
 /* قالب تصاویر شبکه‌های اجتماعی فَروَم. هر .card یک فایل PNG می‌شود (render.js). */
-:root{--velvet:#0E4A38;--deep:#072A20;--gold:#D9AE4A;--gold2:#F0CF7A;--paper:#FBF8EF;--cream:#F3EEDF;--mute:#A9BCB1;--ink:#13221D;--warn:#E39A4F}
+:root{--velvet:#060910;--deep:#060910;--gold:#FFC84A;--gold2:#FFD66E;--teal:#2EF2D0;--paper:rgba(255,255,255,.07);--cream:#EEF2F8;--mute:#98A3B6;--ink:#EEF2F8;--warn:#FF6B8B}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#333;font-family:"Vazirmatn",Tahoma,sans-serif;display:flex;flex-wrap:wrap;gap:40px;padding:40px}
 .card{position:relative;overflow:hidden;color:var(--cream);direction:rtl;
-  background:radial-gradient(900px 600px at 90% -5%,rgba(217,174,74,.22),transparent 60%),repeating-linear-gradient(135deg,rgba(255,255,255,.02) 0 3px,transparent 3px 9px),var(--velvet);
+  background:radial-gradient(900px 640px at 95% -5%,rgba(255,200,74,.22),transparent 60%),radial-gradient(800px 700px at -5% 60%,rgba(46,242,208,.14),transparent 60%),linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/60px 60px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/60px 60px,linear-gradient(#060910,#0B1020);
   padding:90px 84px;display:flex;flex-direction:column}
 .post{width:1080px;height:1350px}
 .story{width:1080px;height:1920px;padding:160px 90px 200px}
 .square{width:1080px;height:1080px;align-items:center;justify-content:center}
 .brand{display:flex;align-items:center;gap:18px;font-family:"Reem Kufi",sans-serif;font-weight:700;font-size:52px}
-.brand svg{width:56px;height:56px}
-.tag{align-self:flex-start;margin-top:64px;font-size:34px;font-weight:700;color:var(--gold);border:2px solid rgba(217,174,74,.55);border-radius:999px;padding:6px 30px}
+.brand svg{width:56px;height:56px;filter:drop-shadow(0 0 10px rgba(255,200,74,.8))}
+.tag{align-self:flex-start;margin-top:64px;font-size:34px;font-weight:700;color:var(--teal);background:rgba(46,242,208,.07);box-shadow:0 0 22px -6px var(--teal);border:2px solid rgba(46,242,208,.6);border-radius:999px;padding:6px 30px}
 h1{font-family:"Reem Kufi",sans-serif;font-weight:700;font-size:92px;line-height:1.35;margin-top:36px}
-h1 em{font-style:normal;color:var(--gold2)}
+h1 em{font-style:normal;color:var(--gold2);text-shadow:0 0 36px rgba(255,200,74,.5)}
 .sub{font-size:38px;line-height:1.75;color:var(--mute);margin-top:30px;font-weight:500}
 ul{list-style:none;margin-top:46px;display:grid;gap:26px}
 li{font-size:38px;line-height:1.55;font-weight:500;padding-right:44px;position:relative}
-li::before{content:"";position:absolute;right:0;top:.5em;width:18px;height:18px;background:var(--gold);transform:rotate(45deg)}
+li::before{content:"";position:absolute;right:0;top:.5em;width:18px;height:18px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 12px var(--gold)}
 li b{color:var(--gold2);font-weight:800}
-.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:2px solid rgba(217,174,74,.35);padding-top:34px;font-size:34px}
-.cta{background:var(--gold);color:#1B1606;font-weight:800;border-radius:999px;padding:14px 40px}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:2px solid rgba(46,242,208,.3);padding-top:34px;font-size:34px}
+.cta{background:var(--gold);color:#1A1405;box-shadow:0 0 34px -4px rgba(255,200,74,.85);font-weight:800;border-radius:999px;padding:14px 40px}
 .foot span{color:var(--mute)}
-.slip{background:var(--paper);color:var(--ink);border-radius:26px;padding:40px;margin-top:56px;box-shadow:0 40px 80px -30px rgba(0,0,0,.6)}
-.slip .row{display:flex;justify-content:space-between;font-size:34px;padding:10px 0;border-bottom:2px dashed #D6CFBA}
+.slip{background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.03));color:var(--ink);border-radius:30px;padding:40px;margin-top:56px;border:2px solid rgba(46,242,208,.55);box-shadow:0 0 44px -12px var(--teal),inset 0 0 30px -18px var(--teal)}
+.slip .row{display:flex;justify-content:space-between;font-size:34px;padding:10px 0;border-bottom:2px dashed rgba(255,255,255,.15)}
 .slip .row:last-child{border:0}
 .slip .row b{font-weight:800}
-.lcd{background:#142A22;color:#9BF0B8;border-radius:16px;padding:22px 30px;direction:ltr;text-align:left;font-weight:800;font-size:84px;margin-bottom:18px}
+.lcd{background:rgba(0,0,0,.35);color:var(--teal);text-shadow:0 0 18px rgba(46,242,208,.7);border-radius:16px;padding:22px 30px;direction:ltr;text-align:left;font-weight:800;font-size:84px;margin-bottom:18px}
 .lcd small{font-size:32px;color:#6FB98A;font-weight:600}
-.ok{color:#1E7A4F}.wait{color:#A5520B}
-.leak{display:flex;gap:26px;align-items:baseline;font-size:44px;font-weight:700;padding:26px 0;border-bottom:2px solid rgba(217,174,74,.25)}
-.leak .m{color:var(--warn);font-family:"Reem Kufi";font-size:60px}
+.ok{color:#39E58C;text-shadow:0 0 10px #39E58C}.wait{color:var(--gold)}
+.leak{display:flex;gap:26px;align-items:baseline;font-size:44px;font-weight:700;padding:26px 0;border-bottom:2px solid rgba(255,255,255,.1)}
+.leak .m{color:var(--warn);text-shadow:0 0 14px var(--warn);font-family:"Reem Kufi";font-size:60px}
 .leak:last-child{border-bottom:0}
 .leak small{display:block;font-size:32px;color:var(--mute);font-weight:500;margin-top:6px}
 .big{font-size:120px}
 .logo-mark{width:520px;height:520px}
+.logo-mark{filter:drop-shadow(0 0 30px rgba(255,200,74,.8))}
 .logo-name{font-family:"Reem Kufi";font-weight:700;font-size:150px;margin-top:10px}
 </style>
 </head>
@@ -48,7 +49,7 @@ li b{color:var(--gold2);font-weight:800}
 
 <!-- 01: پست اصلی -->
 <section class="card post" id="post-01-main">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <h1>در بازار طلا، هر خطا<br>با <em>وزن طلا</em><br>تسویه می‌شود.</h1>
   <p class="sub">گاوصندوق، ترازو، معاملات، پرسنل و حسابداری وزنی و ریالی؛ همه در یک زنجیره.</p>
   <div class="slip">
@@ -57,12 +58,12 @@ li b{color:var(--gold2);font-weight:800}
     <div class="row"><span>تأیید خروج · صندوق‌دار</span><b class="ok">✓</b></div>
     <div class="row"><span>تأیید نهایی · حسابدار</span><b class="wait">در انتظار</b></div>
   </div>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">درخواست دمو</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">درخواست دمو</b></div>
 </section>
 
 <!-- 02: ویترین‌دار -->
 <section class="card post" id="post-02-vitrin">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <span class="tag">برای ویترین‌داران</span>
   <h1>مغازه و گاوصندوق‌تان،<br><em>۲۴ ساعته</em> در مشت شما</h1>
   <ul>
@@ -71,12 +72,12 @@ li b{color:var(--gold2);font-weight:800}
     <li><b>سریال یکتا</b> برای هر قطعه و قفل فوری کالای سرقتی</li>
     <li>حضور و غیاب متصل به <b>حقوق و پاداش</b></li>
   </ul>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">دمو رایگان</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">دمو رایگان</b></div>
 </section>
 
 <!-- 03: بنکدار -->
 <section class="card post" id="post-03-bonakdar">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <span class="tag">برای بنکداران و عمده‌فروشان</span>
   <h1>هیچ همکاری از <em>فی</em><br>همکار دیگر باخبر نمی‌شود.</h1>
   <ul>
@@ -85,12 +86,12 @@ li b{color:var(--gold2);font-weight:800}
     <li>تخفیف خودکار برای <b>تسویه زیر ۴۸ ساعت</b></li>
     <li><b>مال‌گردانی خودکار</b> بین ده‌ها همکار، بدون نقدینگی اضافه</li>
   </ul>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">دمو رایگان</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">دمو رایگان</b></div>
 </section>
 
 <!-- 04: کیفی -->
 <section class="card post" id="post-04-kifi">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <span class="tag">برای کیفی‌ها</span>
   <h1>پایان کابوس<br><em>مغایرت وزن</em><br>در شلوغی بازار</h1>
   <ul>
@@ -98,12 +99,12 @@ li b{color:var(--gold2);font-weight:800}
     <li>عکس ترازو، فیش و <b>صدای توافق</b> همان لحظه روی گوشی</li>
     <li>زنجیره سه‌لایه: <b>صندوق‌دار، کیفی، حسابدار</b></li>
   </ul>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">دمو رایگان</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">دمو رایگان</b></div>
 </section>
 
 <!-- 05: کارگاه -->
 <section class="card post" id="post-05-kargah">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <span class="tag">برای کارگاه‌داران و طلاسازان</span>
   <h1>کسری کارگاه‌تان<br>را <em>سوت به سوت</em><br>ببینید.</h1>
   <ul>
@@ -112,12 +113,12 @@ li b{color:var(--gold2);font-weight:800}
     <li>کسری مجاز، واقعی و <b>خطای پرسنل</b>، جدا از هم</li>
     <li>چرخه <b>خاک و قالکاری</b> با سند خودکار</li>
   </ul>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">دمو رایگان</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">دمو رایگان</b></div>
 </section>
 
 <!-- 06: آبشده -->
 <section class="card post" id="post-06-abshode">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <span class="tag">برای آبشده‌فروشان</span>
   <h1>اتاق معاملات<br>با <em>نام و لوگوی</em><br>خودتان</h1>
   <ul>
@@ -126,12 +127,12 @@ li b{color:var(--gold2);font-weight:800}
     <li><b>کارت یکتای آبشده</b>: انگ، ری‌گیری، عکس ترازو</li>
     <li>تقسیم خودکار مبالغ طبق <b>سقف ساتنا و پایا</b></li>
   </ul>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">دمو رایگان</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">دمو رایگان</b></div>
 </section>
 
 <!-- 07: سکه -->
 <section class="card post" id="post-07-sekke">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <span class="tag">برای سکه‌فروشان و صرافی‌ها</span>
   <h1>ادعای سکه تقلبی؟<br><em>عکس پلمپ</em> جواب می‌دهد.</h1>
   <ul>
@@ -140,12 +141,12 @@ li b{color:var(--gold2);font-weight:800}
     <li>موجودی دوگانه: <b>تعداد و معادل وزنی</b></li>
     <li>تسویه ترکیبی سکه با <b>آبشده، ارز و ریال</b></li>
   </ul>
-  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><b class="cta">دمو رایگان</b></div>
+  <div class="foot"><span dir="ltr">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><b class="cta">دمو رایگان</b></div>
 </section>
 
 <!-- استوری ۱: نشتی‌ها -->
 <section class="card story" id="story-01-leaks">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <h1 style="font-size:96px;margin-top:80px">۵ نشتی پنهان<br>سود <em>طلافروشی</em></h1>
   <div style="margin-top:60px">
     <div class="leak"><span class="m">−</span><div>فیش واریزی تأییدنشده<small>پولی که هیچ‌وقت نرسید</small></div></div>
@@ -154,24 +155,24 @@ li b{color:var(--gold2);font-weight:800}
     <div class="leak"><span class="m">−</span><div>ردپای گم‌شده پلمپ سکه<small>روز ادعا، مدرکی نیست</small></div></div>
     <div class="leak"><span class="m">−</span><div>کسری کارگاه<small>که تا آخر سال دیده نمی‌شود</small></div></div>
   </div>
-  <div class="foot" style="flex-direction:column;gap:30px;align-items:stretch;text-align:center"><span style="font-size:40px;color:var(--cream)">فَروَم همه را قبل از اتفاق می‌بندد.</span><b class="cta" style="font-size:44px;padding:26px">برای دمو پیام بدهید</b><div style="text-align:center;font-size:34px;color:var(--mute);line-height:1.8"><span dir="ltr" style="display:inline-block">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><br>اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم</div></div>
+  <div class="foot" style="flex-direction:column;gap:30px;align-items:stretch;text-align:center"><span style="font-size:40px;color:var(--cream)">فَروَم همه را قبل از اتفاق می‌بندد.</span><b class="cta" style="font-size:44px;padding:26px">برای دمو پیام بدهید</b><div style="text-align:center;font-size:34px;color:var(--mute);line-height:1.8"><span dir="ltr" style="display:inline-block">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><br>اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم</div></div>
 </section>
 
 <!-- استوری ۲: سه لایه -->
 <section class="card story" id="story-02-chain">
-  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>فَروَم</div>
+  <div class="brand"><svg viewBox="0 0 32 32"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>فَروَم</div>
   <h1 style="font-size:100px;margin-top:80px">هیچ گرمی<br>بدون <em>امضای سه نفر</em><br>جابه‌جا نمی‌شود.</h1>
   <div class="slip" style="margin-top:80px">
     <div class="row" style="font-size:44px;padding:26px 0"><span>۱. صندوق‌دار · تأیید خروج</span><b class="ok">✓</b></div>
     <div class="row" style="font-size:44px;padding:26px 0"><span>۲. کیفی · ثبت با عکس</span><b class="ok">✓</b></div>
     <div class="row" style="font-size:44px;padding:26px 0"><span>۳. حسابدار · تأیید نهایی</span><b class="ok">✓</b></div>
   </div>
-  <div class="foot" style="flex-direction:column;gap:30px"><b class="cta" style="font-size:44px;padding:26px 60px">دمو رایگان صنف شما</b><div style="text-align:center;font-size:34px;color:var(--mute);line-height:1.8"><span dir="ltr" style="display:inline-block">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertificatin.ir</span><br>اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم</div></div>
+  <div class="foot" style="flex-direction:column;gap:30px"><b class="cta" style="font-size:44px;padding:26px 60px">دمو رایگان صنف شما</b><div style="text-align:center;font-size:34px;color:var(--mute);line-height:1.8"><span dir="ltr" style="display:inline-block">۰۹۱۳ ۸۱۴ ۳۰۷۳ · goldcertification.ir</span><br>اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم</div></div>
 </section>
 
 <!-- لوگو پروفایل -->
 <section class="card square" id="profile-logo">
-  <svg class="logo-mark" viewBox="0 0 32 32" style="width:440px;height:440px"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="1.6"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>
+  <svg class="logo-mark" viewBox="0 0 32 32" style="width:440px;height:440px"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="1.6"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>
   <div class="logo-name">فَروَم</div>
 </section>
 

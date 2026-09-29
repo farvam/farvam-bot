@@ -392,6 +392,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
     </div>
     <div class="gallery" id="gal-mgmt" role="tabpanel" aria-labelledby="g-mgmt" hidden>
       <figure class="shot empty" data-img="mgmt-access" data-label="سطح دسترسی هر همکار"><img alt="تعیین سطح دسترسی جزئی برای هر همکار در فَروَم"><div class="ph"></div><figcaption class="cap">سطح دسترسی هر همکار، تیک به تیک: ثبت سند، موجودی، کارگاه، میز معاملات، قیمت‌گذاری، مال‌گردانی و ایجنت حسابداری</figcaption></figure>
+      <figure class="shot empty" data-img="mgmt-delegate" data-label="تفویض اختیار به ادمین شعبه"><img alt="تفویض دسترسی به ادمین شعبه با سقف دسترسی مدیرعامل"><div class="ph"></div><figcaption class="cap">تفویض اختیار به ادمین هر شعبه، همیشه زیر سقف دسترسی مدیرعامل</figcaption></figure>
       <figure class="shot empty" data-img="mgmt-branches" data-label="شعبه‌ها و نیروها"><img alt="مدیریت شعبه‌ها و نیروهای هر شعبه با نقش و دسترسی"><div class="ph"></div><figcaption class="cap">شعبه‌ها و نیروها: هر شعبه با حسابداری مستقل، نقش و دسترسی جدا برای هر نفر</figcaption></figure>
       <figure class="shot empty" data-img="mgmt-alerts" data-label="اخطار و اعلان همکاران"><img alt="ارسال اخطار و اعلان هدفمند به همکاران"><div class="ph"></div><figcaption class="cap">اخطار و اعلان هدفمند به یک همکار، یک شعبه یا همه، داخل پنل معاملات و حسابداری</figcaption></figure>
       <figure class="shot empty" data-img="mgmt-forms" data-label="فرم درخواست همکاری"><img alt="فرم ساز درخواست همکاری با توافق‌نامه، امضای الکترونیکی و ویدیوی احراز هویت"><div class="ph"></div><figcaption class="cap">فرم درخواست همکاری با فیلدهای دلخواه، توافق‌نامه، امضای الکترونیکی و ویدیوی احراز هویت</figcaption></figure>
@@ -565,7 +566,7 @@ var ROLES = {
     ["موجودی دوگانه:","تعداد فیزیکی سکه و ارزش وزنی و ریالی معادل، با هشدار پوزیشن باز"],
     ["تسویه ترکیبی:","سکه با آبشده، نقره، ارز و ریال با محاسبه دقیق مابه‌التفاوت"]]}
 };
-var LABELS = {"acc-accounts":"دیده‌بان حساب‌ها","acc-voucher":"ثبت سند","acc-voice":"دستیار صوتی سند","acc-malgardani":"دستیار مال‌گردانی","acc-priority":"اولویت تسویه","acc-dashboard":"داشبورد حسابداری","acc-kpis":"شاخص‌های داشبورد","acc-cash-trend":"روند موجودی صندوق","acc-inventory":"موجودی و آبشده","acc-search":"جست‌وجوی اسناد","ops-home":"صفحه اصلی پنل عملیاتی","ops-cashflow":"گردش صندوق","ops-workshop":"کارت کارگاه","ops-myaccount":"حساب من","trade-room":"اتاق معاملات","mgmt-access":"سطح دسترسی هر همکار","mgmt-branches":"شعبه‌ها و نیروها","mgmt-alerts":"اخطار و اعلان همکاران","mgmt-forms":"فرم درخواست همکاری"};
+var LABELS = {"acc-accounts":"دیده‌بان حساب‌ها","acc-voucher":"ثبت سند","acc-voice":"دستیار صوتی سند","acc-malgardani":"دستیار مال‌گردانی","acc-priority":"اولویت تسویه","acc-dashboard":"داشبورد حسابداری","acc-kpis":"شاخص‌های داشبورد","acc-cash-trend":"روند موجودی صندوق","acc-inventory":"موجودی و آبشده","acc-search":"جست‌وجوی اسناد","ops-home":"صفحه اصلی پنل عملیاتی","ops-cashflow":"گردش صندوق","ops-workshop":"کارت کارگاه","ops-myaccount":"حساب من","trade-room":"اتاق معاملات","mgmt-access":"سطح دسترسی هر همکار","mgmt-branches":"شعبه‌ها و نیروها","mgmt-alerts":"اخطار و اعلان همکاران","mgmt-forms":"فرم درخواست همکاری","mgmt-delegate":"تفویض اختیار به ادمین شعبه"};
 
 (function(){
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}

@@ -89,6 +89,9 @@ p{margin:0}
 .shot .bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.18)}
 .shot img{display:block;width:100%;max-width:100%;height:auto;border-radius:10px;background:#E9ECF1}
 .shot .ph{display:none}
+.shot.empty{display:none}
+.pillar:has(.shot.empty){grid-template-columns:1fr}
+.panel:has(.shot.empty){grid-template-columns:1fr}
 .shot.empty img{display:none}
 .shot.empty .ph{display:grid;place-items:center;gap:10px;text-align:center;aspect-ratio:16/10;max-width:100%;border-radius:10px;border:1.5px dashed rgba(255,255,255,.18);background:rgba(255,255,255,.025);color:var(--muted);padding:20px;font-size:.92rem}
 .shot.empty .ph b{color:var(--text);font-size:1rem}
@@ -141,7 +144,7 @@ section{padding-block:84px;position:relative}
 .tab{font:inherit;font-weight:700;font-size:.95rem;padding:.55em 1.25em;border-radius:999px;border:1px solid var(--edge);background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .tab[aria-selected="true"]{color:var(--text);border-color:var(--teal);box-shadow:0 0 16px -4px var(--teal),inset 0 0 12px -6px var(--teal)}
 .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
-.gallery .shot:first-child{grid-column:1/-1}
+.gallery .shot.first{grid-column:1/-1}
 .gallery>*{min-width:0}
 @media (max-width:760px){.gallery{grid-template-columns:1fr}}
 
@@ -258,9 +261,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
       <ul class="chips"><li>ویترین‌دار</li><li>بنکدار</li><li>کیفی</li><li>کارگاه‌دار</li><li>آبشده‌فروش</li><li>سکه‌فروش</li></ul>
     </div>
     <div class="hero-visual rise d3">
-      <figure class="shot empty" data-img="acc-dashboard" data-label="داشبورد حسابداری">
+      <figure class="shot empty" data-img="acc-accounts" data-label="دیده‌بان حساب‌ها">
         <div class="bar"><i></i><i></i><i></i></div>
-        <img alt="داشبورد کنترل حساب‌های فَروَم با موجودی تومان، طلا، نقره، دلار و یورو">
+        <img alt="پنل حسابداری فَروَم با موجودی طلا، نقره، دلار و یورو و دیده‌بان حساب‌ها">
         <div class="ph"></div>
       </figure>
       <div class="voucher glass" aria-label="نمونه سند تصویری ترازو">
@@ -314,7 +317,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
             <li><b>سند با صدا و هوش مصنوعی:</b> فرمان صوتی، اسکن فاکتور و خواندن پیامک بانکی</li>
           </ul>
         </div>
-        <figure class="shot empty" data-img="acc-kpis" data-label="شاخص‌های کلیدی داشبورد حسابداری"><img alt="کارت‌های شاخص حسابداری فَروَم: ترازنامه، جریان نقدی، تراز آزمایشی و سود و زیان"><div class="ph"></div></figure>
+        <figure class="shot empty" data-img="acc-voice" data-label="دستیار صوتی سند"><img alt="دستیار صوتی سند در فَروَم: یک جمله بگویید، سند خرید طلا ثبت می‌شود"><div class="ph"></div></figure>
       </article>
       <article class="pillar glass">
         <div class="pillar-text">
@@ -372,6 +375,11 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
       <button class="tab" role="tab" id="g-mgmt" aria-controls="gal-mgmt" aria-selected="false">پنل مدیریتی</button>
     </div>
     <div class="gallery" id="gal-acc" role="tabpanel" aria-labelledby="g-acc">
+      <figure class="shot empty" data-img="acc-malgardani" data-label="دستیار مال‌گردانی"><img alt="دستیار مال‌گردانی فَروَم با مسیر تسویه گرم طلای معادل ۷۵۰ بین صندوق و همکاران"><div class="ph"></div><figcaption class="cap">دستیار مال‌گردانی: کوتاه‌ترین مسیر تسویه بدهکار و بستانکار، به تفکیک تومان، طلا، نقره، ارز و کالا</figcaption></figure>
+      <figure class="shot empty" data-img="acc-voucher" data-label="ثبت سند"><img alt="فرم ثبت سند فَروَم با سند قطعی و امانی، چک، رهن طلا، وام و حقوق"><div class="ph"></div><figcaption class="cap">ثبت سند قطعی یا امانی، با میان‌بر چک، رهن طلا، وام، تأمین‌کننده، حقوق و ضایعات</figcaption></figure>
+      <figure class="shot empty" data-img="acc-priority" data-label="اولویت تسویه"><img alt="تعیین اولویت و محدودیت تسویه برای هر بدهکار و بستانکار"><div class="ph"></div><figcaption class="cap">اولویت و محدودیت تسویه برای هر بدهکار و بستانکار، با تفکیک حساب هر همکار</figcaption></figure>
+      <figure class="shot empty" data-img="acc-voice" data-label="دستیار صوتی سند"><img alt="دستیار صوتی سند و ثبت کالای خرید با عیار، اجرت و وزن نگین"><div class="ph"></div><figcaption class="cap">دستیار صوتی: «از آقای رضایی ۵ گرم طلای کار ساخته با ده درصد اجرت خریدیم» و سند آماده است</figcaption></figure>
+      <figure class="shot empty" data-img="acc-accounts" data-label="دیده‌بان حساب‌ها"><img alt="دیده‌بان حساب‌ها با مانده وزنی و ریالی هر طرف حساب"><div class="ph"></div><figcaption class="cap">دیده‌بان حساب‌ها: مانده تومان و گرم طلای معادل ۷۵۰ هر طرف حساب، سقف اعتبار و پورسانت همکاران</figcaption></figure>
       <figure class="shot empty" data-img="acc-cash-trend" data-label="روند موجودی صندوق"><img alt="نمودار روند موجودی صندوق به تفکیک طلا، نقره، ارز، کالا و تومان"><div class="ph"></div><figcaption class="cap">روند موجودی صندوق به تفکیک طلا، نقره، ارز، کالا و تومان، با سندهای سازنده هر نقطه</figcaption></figure>
       <figure class="shot empty" data-img="acc-inventory" data-label="موجودی و آبشده"><img alt="موجودی طلا به تفکیک کار ساخته، آبشده، سکه و متفرقه با معادل ۷۵۰"><div class="ph"></div><figcaption class="cap">موجودی طلا به تفکیک کار ساخته، آبشده، سکه و متفرقه، با برایند معادل ۷۵۰</figcaption></figure>
       <figure class="shot empty" data-img="acc-search" data-label="جست‌وجوی پیشرفته اسناد"><img alt="جست‌وجوی پیشرفته اسناد با فیلتر تاریخ، ساعت، طرف حساب، وزن و مبلغ"><div class="ph"></div><figcaption class="cap">جست‌وجوی اسناد با تاریخ، ساعت، طرف حساب، واردکننده، وزن و مبلغ</figcaption></figure>
@@ -520,13 +528,13 @@ var IMG_DIR = "images/", IMG_EXT = ".webp";
 var WHATSAPP = "989138143073";
 
 var ROLES = {
-  vitrin:{img:"acc-inventory",role:"ویترین‌داران و فروشگاه‌های طلا و جواهر",title:"مغازه و گاوصندوق شما، ۲۴ ساعته در مشت شماست.",intro:"ادعای مغایرت وزن بعد از چند سال، خطای پرسنل در فاکتور، ندیدن موجودی واقعی سینی‌ها و ترس از ورود طلای سرقتی؛ فَروَم همه این‌ها را به یک سپر امنیتی تبدیل می‌کند.",list:[
+  vitrin:{img:"acc-accounts",role:"ویترین‌داران و فروشگاه‌های طلا و جواهر",title:"مغازه و گاوصندوق شما، ۲۴ ساعته در مشت شماست.",intro:"ادعای مغایرت وزن بعد از چند سال، خطای پرسنل در فاکتور، ندیدن موجودی واقعی سینی‌ها و ترس از ورود طلای سرقتی؛ فَروَم همه این‌ها را به یک سپر امنیتی تبدیل می‌کند.",list:[
     ["بایگانی تصویری هر فاکتور:","عکس قطعه روی ترازو، برگه عیار، شناسنامه سنگ و کارت ملی مشتری، سال‌ها بعد با یک جست‌وجو"],
     ["پرسنل با اختیار محدود:","فاکتور می‌زنند و بارکد اسکن می‌کنند، اما سود و سرمایه شما را نمی‌بینند؛ هر تغییر به نام خودشان ثبت می‌شود"],
     ["ردیابی گاوصندوق تا سینی:","خروج، فروش، ارسال به کارگاه، طلای کهنه، کسر نگین و محاسبه مابه‌التفاوت بدون خطا"],
     ["فاکتور الکترونیکی استاندارد اتحادیه","با کد قابل استعلام"],
     ["حضور و غیاب متصل به حقوق","و نظارت ابری از هر جای دنیا"]]},
-  bonak:{img:"trade-room",role:"بنکداران و عمده‌فروشان",title:"فی شما محرمانه می‌ماند، شبکه همکاران خودکار می‌چرخد.",intro:"صدها قلم کالا، ده‌ها کارگاه، صدها همکار با شرایط اختصاصی و حجم سنگین تسویه‌های وزنی، ارزی و ریالی؛ فَروَم بنکداری شما را به سفارش‌گیری زنده و موتور تسویه خودکار تبدیل می‌کند.",list:[
+  bonak:{img:"acc-malgardani",role:"بنکداران و عمده‌فروشان",title:"فی شما محرمانه می‌ماند، شبکه همکاران خودکار می‌چرخد.",intro:"صدها قلم کالا، ده‌ها کارگاه، صدها همکار با شرایط اختصاصی و حجم سنگین تسویه‌های وزنی، ارزی و ریالی؛ فَروَم بنکداری شما را به سفارش‌گیری زنده و موتور تسویه خودکار تبدیل می‌کند.",list:[
     ["دژ امنیتی فی:","یک‌بار عکس بگیرید؛ هر همکار فقط قیمت، اجرت و شرایط خودش را می‌بیند"],
     ["سقف و کف سفارش","گرمی یا ریالی، بر اساس اعتبار هر مشتری"],
     ["موتور تخفیف:","کسر اجرت برای تسویه زیر ۴۸ ساعت یا کاهش پله‌ای قیمت با حجم خرید ماهانه، خودکار"],
@@ -544,23 +552,39 @@ var ROLES = {
     ["بیلان کسری پرسنل:","کسری مجاز، کسری واقعی، ضایعات قابل بازیافت و خطای پرسنل، جدا از هم"],
     ["چرخه خاک و قالکاری:","از براده تا شمش بازیافتی با سند خودکار تطبیق"],
     ["هزینه تمام‌شده و فاکتور بنکدار","با تفکیک وزن خالص، اجرت و ارزش سنگ"]]},
-  abshode:{img:"acc-cash-trend",role:"آبشده‌فروشان و معامله‌گران",title:"پوزیشن‌های باز زیر نظر، ثانیه به ثانیه.",intro:"معاملات آبشده سرعت بالا، رصد دقیق نوسانات و مدیریت پیچیده مالی و بانکی می‌خواهد.",list:[
+  abshode:{img:"acc-priority",role:"آبشده‌فروشان و معامله‌گران",title:"پوزیشن‌های باز زیر نظر، ثانیه به ثانیه.",intro:"معاملات آبشده سرعت بالا، رصد دقیق نوسانات و مدیریت پیچیده مالی و بانکی می‌خواهد.",list:[
     ["اتاق معاملات با برند شما:","مظنه، ضریب سود و تخفیف جدا برای هر همکار؛ معامله تأییدشده مستقیم سند می‌شود"],
     ["هشدار پوزیشن باز:","نمایش زنده طلا، نقره، مس، ارز و ریال و هشدار ناترازی"],
     ["کارت یکتای آبشده:","شماره انگ، ری‌گیری، عکس ترازو، وزن ناخالص و معادل ۷۵۰ با تاریخچه کامل"],
     ["تسویه‌های بزرگ بانکی:","تقسیم خودکار مبالغ طبق سقف‌های ساتنا و پایا بین چند حساب مقصد"],
     ["تسویه متقاطع","بین طلا، نقره، مس، کالا، ریال و ارز"]]},
-  sekke:{img:"acc-search",role:"سکه‌فروشان و صرافی‌های طلا",title:"سرعت معامله، همراه با زنجیره اصالت هر سکه.",intro:"در تجارت مسکوکات، اصالت و ردیابی مالکیت به اندازه سرعت اهمیت دارد.",list:[
+  sekke:{img:"acc-voucher",role:"سکه‌فروشان و صرافی‌های طلا",title:"سرعت معامله، همراه با زنجیره اصالت هر سکه.",intro:"در تجارت مسکوکات، اصالت و ردیابی مالکیت به اندازه سرعت اهمیت دارد.",list:[
     ["بایگانی تصویری پلمپ:","هولوگرام، سریال و وکیوم در لحظه ورود و خروج، کنار مدارک هویتی"],
     ["زنجیره تأمین:","مسیر کامل خرید تا واگذاری هر سکه برای روزی که ادعایی پیش بیاید"],
     ["اتاق معاملات مسکوکات","با حاشیه سود و مظنه جدا برای هر همکار"],
     ["موجودی دوگانه:","تعداد فیزیکی سکه و ارزش وزنی و ریالی معادل، با هشدار پوزیشن باز"],
     ["تسویه ترکیبی:","سکه با آبشده، نقره، ارز و ریال با محاسبه دقیق مابه‌التفاوت"]]}
 };
-var LABELS = {"acc-dashboard":"داشبورد حسابداری","acc-kpis":"شاخص‌های داشبورد","acc-cash-trend":"روند موجودی صندوق","acc-inventory":"موجودی و آبشده","acc-search":"جست‌وجوی اسناد","ops-home":"صفحه اصلی پنل عملیاتی","ops-cashflow":"گردش صندوق","ops-workshop":"کارت کارگاه","ops-myaccount":"حساب من","trade-room":"اتاق معاملات","mgmt-access":"سطح دسترسی هر همکار","mgmt-branches":"شعبه‌ها و نیروها","mgmt-alerts":"اخطار و اعلان همکاران","mgmt-forms":"فرم درخواست همکاری"};
+var LABELS = {"acc-accounts":"دیده‌بان حساب‌ها","acc-voucher":"ثبت سند","acc-voice":"دستیار صوتی سند","acc-malgardani":"دستیار مال‌گردانی","acc-priority":"اولویت تسویه","acc-dashboard":"داشبورد حسابداری","acc-kpis":"شاخص‌های داشبورد","acc-cash-trend":"روند موجودی صندوق","acc-inventory":"موجودی و آبشده","acc-search":"جست‌وجوی اسناد","ops-home":"صفحه اصلی پنل عملیاتی","ops-cashflow":"گردش صندوق","ops-workshop":"کارت کارگاه","ops-myaccount":"حساب من","trade-room":"اتاق معاملات","mgmt-access":"سطح دسترسی هر همکار","mgmt-branches":"شعبه‌ها و نیروها","mgmt-alerts":"اخطار و اعلان همکاران","mgmt-forms":"فرم درخواست همکاری"};
 
 (function(){
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+  /* gallery tabs only show panels that have at least one image */
+  var gtabs=[document.getElementById("g-acc"),document.getElementById("g-ops"),document.getElementById("g-mgmt")];
+  var gsec=document.getElementById("panels");
+  function refresh(){
+    var any=false, sel=null;
+    gtabs.forEach(function(t){
+      var pan=document.getElementById(t.getAttribute("aria-controls"));
+      var shots=[].slice.call(pan.querySelectorAll(".shot:not(.empty)"));
+      shots.forEach(function(f,i){f.classList.toggle("first",i===0)});
+      t.hidden=!shots.length; if(shots.length)any=true;
+      if(t.getAttribute("aria-selected")==="true"&&!t.hidden)sel=t;
+    });
+    gsec.hidden=!any;
+    if(!sel){var v=gtabs.filter(function(t){return!t.hidden})[0];if(v)v.click()}
+  }
 
   /* image slots */
   function bindShot(fig){
@@ -568,8 +592,8 @@ var LABELS = {"acc-dashboard":"داشبورد حسابداری","acc-kpis":"شا
     var label=fig.dataset.label||LABELS[key]||key;
     ph.innerHTML='<span class="neon t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></span><b>تصویر: '+esc(label)+'</b><code>'+esc(IMG_DIR+key+IMG_EXT)+'</code>';
     fig.classList.add("empty");
-    img.onload=function(){fig.classList.remove("empty")};
-    img.onerror=function(){fig.classList.add("empty")};
+    img.onload=function(){fig.classList.remove("empty");refresh()};
+    img.onerror=function(){fig.classList.add("empty");refresh()};
     img.src=IMG_DIR+key+IMG_EXT;
   }
   [].forEach.call(document.querySelectorAll(".shot[data-img]"),function(f){if(f.id!=="role-shot")bindShot(f)});
@@ -585,7 +609,6 @@ var LABELS = {"acc-dashboard":"داشبورد حسابداری","acc-kpis":"شا
   }
 
   /* gallery */
-  var gtabs=[document.getElementById("g-acc"),document.getElementById("g-ops"),document.getElementById("g-mgmt")];
   tabs(gtabs,function(t){gtabs.forEach(function(x){document.getElementById(x.getAttribute("aria-controls")).hidden=x!==t})});
 
   /* roles */

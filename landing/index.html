@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فَروَم</title>
+<meta name="description" content="فَروَم؛ اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر. حسابداری وزنی و ریالی، سند تصویری ترازو، اتاق معاملات با برند شما و مال‌گردانی خودکار.">
+<meta property="og:title" content="فَروَم | از ثبت اولین سوت تا بستن تراز سالانه">
+<meta property="og:description" content="در بازار طلا، هر خطا با وزن طلا تسویه می‌شود. فَروَم گاوصندوق، معاملات، پرسنل و حسابداری شما را در یک زنجیره به هم وصل می‌کند.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Vazirmatn:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: velvet-tray hero (jeweler's green velvet + gold), then a quiet light ledger page; one bold zone, the rest calm. */
+:root{
+  --bg:#F1F4F1; --surface:#FFFFFF; --ink:#13221D; --muted:#55655E; --line:#D3DBD5;
+  --velvet:#0E4A38; --velvet-deep:#093427; --on-velvet:#F3EEDF; --on-velvet-muted:#B9C9BF;
+  --gold:#9A6B0C; --gold-bright:#D9AE4A; --gold-soft:#F1E6C6; --ok:#1E7A4F; --warn:#A5520B;
+  --display:"Reem Kufi","Vazirmatn",Tahoma,sans-serif;
+  --body:"Vazirmatn",Tahoma,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1411; --surface:#101D19; --ink:#E5ECE8; --muted:#93A49C; --line:#22362F;
+    --velvet:#0D3F30; --velvet-deep:#072A20; --on-velvet:#F3EEDF; --on-velvet-muted:#A9BCB1;
+    --gold:#E0B551; --gold-bright:#E6BD5C; --gold-soft:#2E2914; --ok:#4FBF86; --warn:#E39A4F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1411; --surface:#101D19; --ink:#E5ECE8; --muted:#93A49C; --line:#22362F;
+  --velvet:#0D3F30; --velvet-deep:#072A20; --on-velvet:#F3EEDF; --on-velvet-muted:#A9BCB1;
+  --gold:#E0B551; --gold-bright:#E6BD5C; --gold-soft:#2E2914; --ok:#4FBF86; --warn:#E39A4F;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.9;-webkit-font-smoothing:antialiased}
+.page{direction:rtl;text-align:right}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);line-height:1.35;text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1140px;margin-inline:auto;padding-inline:20px}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--gold-bright);outline-offset:3px;border-radius:4px}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--velvet-deep);color:var(--on-velvet);border-bottom:1px solid rgba(217,174,74,.25)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:1.5rem;font-weight:700}
+.brand svg{flex:none}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:.95rem}
+.nav ul a{text-decoration:none;color:var(--on-velvet-muted)}
+.nav ul a:hover{color:var(--on-velvet)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:700;border-radius:999px;padding:.7em 1.5em;border:0;cursor:pointer;text-decoration:none;transition:transform .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-gold{background:var(--gold-bright);color:#1B1606}
+.btn-gold:hover{background:#E8C46A}
+.btn-ghost{background:transparent;color:var(--on-velvet);box-shadow:inset 0 0 0 1px rgba(243,238,223,.35)}
+@media (max-width:820px){.nav ul{display:none}}
+
+/* hero */
+.hero{background:
+  radial-gradient(1200px 500px at 85% -10%, rgba(217,174,74,.16), transparent 60%),
+  repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 2px, transparent 2px 6px),
+  var(--velvet);color:var(--on-velvet)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding-block:72px 84px}
+.hero .wrap>*{min-width:0}
+.eyebrow{display:inline-block;font-size:.85rem;letter-spacing:.02em;color:var(--gold-bright);border:1px solid rgba(217,174,74,.45);border-radius:999px;padding:.2em 1em;margin-bottom:22px}
+.hero h1{font-size:clamp(2rem,4.6vw,3.4rem);font-weight:700}
+.hero h1 em{font-style:normal;color:var(--gold-bright)}
+.hero .lead{margin-top:20px;font-size:1.12rem;color:var(--on-velvet-muted);max-width:34em}
+.hero .lead b{color:var(--on-velvet)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:30px;font-size:.9rem;color:var(--on-velvet-muted);list-style:none;padding:0}
+.hero-tags li::before{content:"◆";color:var(--gold-bright);font-size:.6em;margin-left:8px;vertical-align:middle}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr;padding-block:48px 56px}}
+
+/* voucher mock */
+.slip{background:#FBF8EF;color:#1A231F;border-radius:14px;padding:22px;box-shadow:0 30px 60px -20px rgba(0,0,0,.55),0 0 0 1px rgba(217,174,74,.5);position:relative;max-width:440px;justify-self:center;width:100%}
+.slip-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:.85rem;color:#5B665F;border-bottom:1px dashed #C9C2AE;padding-bottom:10px}
+.slip-head strong{font-family:var(--display);font-size:1.1rem;color:#0E4A38}
+.sample{position:absolute;top:-12px;left:18px;background:#9A6B0C;color:#fff;font-size:.72rem;padding:.1em .8em;border-radius:999px}
+.scale{margin-top:16px;display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center}
+.scale-photo{aspect-ratio:1;max-width:100%;border-radius:10px;background:radial-gradient(circle at 50% 58%, #E9C35F 0 16%, #B98A22 17% 21%, transparent 22%),radial-gradient(circle at 50% 70%, #2B3531 0 38%, #1A211E 39%);position:relative;overflow:hidden}
+.scale-photo::after{content:"LIVE";position:absolute;top:6px;right:6px;font:600 .6rem/1 var(--body);letter-spacing:.08em;color:#fff;background:#B3261E;padding:3px 5px;border-radius:3px}
+.lcd{background:#142A22;color:#9BF0B8;border-radius:8px;padding:10px 14px;font-variant-numeric:tabular-nums;direction:ltr;text-align:left}
+.lcd .w{font-size:1.9rem;font-weight:800;letter-spacing:.02em;line-height:1.2}
+.lcd .u{font-size:.8rem;color:#6FB98A}
+.slip dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:16px 0 0;font-size:.92rem}
+.slip dt{color:#5B665F}
+.slip dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+.chain{list-style:none;margin:16px 0 0;padding:14px 0 0;border-top:1px dashed #C9C2AE;display:grid;gap:8px;font-size:.88rem}
+.chain li{display:flex;align-items:center;gap:10px}
+.chain .dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;flex:none}
+.chain .done .dot{background:#1E7A4F;color:#fff}
+.chain .wait .dot{background:transparent;box-shadow:inset 0 0 0 2px #A5520B;color:#A5520B}
+.chain .who{color:#5B665F;margin-inline-start:auto;font-size:.8rem}
+
+/* sections */
+section{padding-block:88px}
+.sec-head{max-width:720px;margin-bottom:44px}
+.kicker{font-size:.85rem;font-weight:700;color:var(--gold);letter-spacing:.02em;margin-bottom:10px}
+.sec-head h2{font-size:clamp(1.6rem,3.2vw,2.35rem);font-weight:700}
+.sec-head p{margin-top:14px;color:var(--muted);font-size:1.05rem}
+
+/* leaks */
+.leaks{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.leak{background:var(--surface);padding:22px 18px;display:grid;gap:8px;align-content:start;min-width:0}
+.leak .minus{font-family:var(--display);font-size:1.35rem;color:var(--warn);direction:ltr;text-align:right}
+.leak h3{font-family:var(--body);font-size:1rem;font-weight:700}
+.leak p{font-size:.9rem;color:var(--muted);line-height:1.8}
+.leaks-note{margin-top:22px;font-size:1.05rem}
+.leaks-note b{color:var(--gold)}
+@media (max-width:980px){.leaks{grid-template-columns:repeat(2,1fr)}.leak:last-child{grid-column:1/-1}}
+@media (max-width:520px){.leaks{grid-template-columns:1fr}}
+
+/* pillars */
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pillar{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px;min-width:0}
+.pillar-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.glyph{width:46px;height:46px;border-radius:12px;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;flex:none}
+.pillar h3{font-size:1.3rem}
+.pillar>p{color:var(--muted);margin-bottom:14px}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ticks li{position:relative;padding-inline-start:22px;line-height:1.8}
+.ticks li::before{content:"";position:absolute;inset-inline-start:0;top:.7em;width:8px;height:8px;background:var(--gold);transform:rotate(45deg);border-radius:1px}
+.ticks b{font-weight:700}
+@media (max-width:820px){.pillars{grid-template-columns:1fr}}
+
+/* flow */
+.flow-sec{background:var(--surface);border-block:1px solid var(--line)}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:f}
+.flow li{position:relative;padding:22px 20px;border-radius:12px;background:var(--bg);border:1px solid var(--line);counter-increment:f;min-width:0}
+.flow li::before{content:counter(f, persian);font-family:var(--display);font-size:.95rem;color:var(--gold);display:block;margin-bottom:6px}
+.flow li:not(:last-child)::after{content:"←";position:absolute;left:-15px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:800;background:var(--surface);padding:2px}
+.flow h3{font-family:var(--body);font-size:1.02rem;font-weight:800}
+.flow p{font-size:.9rem;color:var(--muted);margin-top:6px}
+.replaces{margin-top:34px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.92rem;color:var(--muted)}
+.replaces s{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:.15em .9em;text-decoration-color:var(--warn)}
+@media (max-width:900px){.flow{grid-template-columns:1fr 1fr}.flow li:nth-child(2)::after{display:none}}
+@media (max-width:520px){.flow{grid-template-columns:1fr}.flow li::after{display:none}}
+
+/* roles */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.tab{font:inherit;font-weight:700;font-size:.95rem;padding:.55em 1.2em;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--velvet);border-color:var(--velvet);color:var(--on-velvet)}
+.panel{display:grid;grid-template-columns:.8fr 1.2fr;gap:36px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:36px}
+.panel>*{min-width:0}
+.panel .role{font-size:.9rem;color:var(--gold);font-weight:700}
+.panel h3{font-size:clamp(1.3rem,2.4vw,1.75rem);margin-top:6px}
+.panel .intro{color:var(--muted);margin-top:14px}
+.panel .ticks{gap:14px}
+@media (max-width:860px){.panel{grid-template-columns:1fr;padding:24px;gap:20px}}
+
+/* security */
+.sec-dark{background:var(--velvet-deep);color:var(--on-velvet)}
+.sec-dark .kicker{color:var(--gold-bright)}
+.sec-dark .sec-head p{color:var(--on-velvet-muted)}
+.layers{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.layers li{border:1px solid rgba(217,174,74,.35);border-radius:14px;padding:26px;min-width:0}
+.layers .lv{font-family:var(--display);color:var(--gold-bright);font-size:.95rem}
+.layers h3{font-size:1.25rem;margin-top:4px}
+.layers p{color:var(--on-velvet-muted);margin-top:10px;font-size:.95rem}
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:40px}
+.proof div{border-top:1px solid rgba(243,238,223,.2);padding-top:14px;min-width:0}
+.proof b{display:block;font-size:1rem}
+.proof span{font-size:.88rem;color:var(--on-velvet-muted)}
+@media (max-width:860px){.layers{grid-template-columns:1fr}.proof{grid-template-columns:1fr 1fr}}
+
+/* faq */
+.faq{display:grid;gap:10px;max-width:820px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 22px}
+.faq summary{cursor:pointer;font-weight:700;padding-block:14px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--gold);font-size:1.3rem;line-height:1}
+.faq details[open] summary::after{content:"−"}
+.faq details p{color:var(--muted);padding-bottom:16px}
+
+/* demo */
+.demo{background:var(--velvet);color:var(--on-velvet)}
+.demo .wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.demo .wrap>*{min-width:0}
+.demo h2{font-size:clamp(1.7rem,3.4vw,2.5rem)}
+.demo .lead{color:var(--on-velvet-muted);margin-top:14px;font-size:1.05rem}
+.contact{margin-top:26px;display:grid;gap:8px;font-size:1rem}
+.contact span{color:var(--on-velvet-muted);margin-inline-end:8px}
+form{background:#FBF8EF;color:#1A231F;border-radius:16px;padding:28px;display:grid;gap:14px}
+label{display:grid;gap:6px;font-size:.92rem;font-weight:700}
+input,select,textarea{font:inherit;font-weight:400;padding:.65em .9em;border-radius:10px;border:1px solid #CFC8B4;background:#fff;color:#1A231F;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid #9A6B0C;outline-offset:1px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.out{display:grid;gap:12px;border-top:1px dashed #C9C2AE;padding-top:14px}
+.out pre{white-space:pre-wrap;font:inherit;font-size:.9rem;background:#F1ECDD;border-radius:10px;padding:12px;margin:0}
+.out .acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn-dark{background:#0E4A38;color:#F3EEDF}
+.hint{font-size:.82rem;color:#5B665F}
+@media (max-width:860px){.demo .wrap{grid-template-columns:1fr}}
+@media (max-width:480px){.form-row{grid-template-columns:1fr}}
+
+footer{background:var(--velvet-deep);color:var(--on-velvet-muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-block:26px}
+
+.rise{animation:rise .7s ease both}
+.rise.d2{animation-delay:.12s}.rise.d3{animation-delay:.24s}
+@keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+</style>
+</head>
+<body>
+<div class="page" dir="rtl" lang="fa">
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="فَروَم">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#D9AE4A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#D9AE4A"/></svg>
+      فَروَم
+    </a>
+    <ul>
+      <li><a href="#pillars">امکانات</a></li>
+      <li><a href="#roles">برای صنف شما</a></li>
+      <li><a href="#security">امنیت</a></li>
+      <li><a href="#faq">پرسش‌ها</a></li>
+    </ul>
+    <a class="btn btn-gold" href="#demo">درخواست دمو</a>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero" style="padding-block:0">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow rise">اکوسیستم مدیریت، عملیات و معاملات طلا و جواهر</span>
+      <h1 class="rise d2">در بازار طلا، هر خطا<br>با <em>وزن طلا</em> تسویه می‌شود.</h1>
+      <p class="lead rise d3">فَروَم گاوصندوق، ترازو، معاملات، پرسنل و حسابداری وزنی و ریالی شما را در <b>یک زنجیره پیوسته</b> به هم وصل می‌کند؛ از ثبت اولین سوت تا بستن تراز سالانه.</p>
+      <div class="hero-cta">
+        <a class="btn btn-gold" href="#demo">دمو اختصاصی صنف من</a>
+        <a class="btn btn-ghost" href="#roles">فَروَم برای کار من چه می‌کند؟</a>
+      </div>
+      <ul class="hero-tags">
+        <li>ویترین‌دار</li><li>بنکدار</li><li>کیفی</li><li>کارگاه‌دار</li><li>آبشده‌فروش</li><li>سکه‌فروش</li>
+      </ul>
+    </div>
+
+    <figure class="slip rise d3" aria-label="نمونه سند تصویری ترازو در فَروَم" style="margin:0">
+      <span class="sample">نمونه</span>
+      <div class="slip-head"><strong>سند تصویری ترازو</strong><span class="num">شماره ۰۷۸۲ · ۱۴۰۵/۰۷/۰۷</span></div>
+      <div class="scale">
+        <div class="scale-photo" role="img" aria-label="تصویر زنده قطعه روی ترازو"></div>
+        <div class="lcd"><div class="w">12.450</div><div class="u">g · 750 ‰</div></div>
+      </div>
+      <dl>
+        <dt>کالا</dt><dd>النگو ۱۸ عیار · سریال FR-۲۲۹۱۸</dd>
+        <dt>وزن معادل ۷۵۰</dt><dd>۱۲٫۴۵۰ گرم</dd>
+        <dt>پیوست‌ها</dt><dd>عکس ترازو · فیش بانکی · کارت ملی</dd>
+      </dl>
+      <ol class="chain">
+        <li class="done"><span class="dot">✓</span>ثبت در محل<span class="who">کیفی</span></li>
+        <li class="done"><span class="dot">✓</span>تأیید خروج فیزیکی<span class="who">صندوق‌دار</span></li>
+        <li class="wait"><span class="dot">…</span>بازبینی و تأیید نهایی<span class="who">حسابدار</span></li>
+      </ol>
+    </figure>
+  </div>
+</section>
+
+<!-- LEAKS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">نشتی‌های پنهان سود</div>
+      <h2>این‌ها با عدد و رقم معمولی جبران نمی‌شوند</h2>
+      <p>هر کدام از این اتفاق‌های کوچک، مستقیماً از سود خالص و اعتبار بازاری شما کم می‌کند.</p>
+    </div>
+    <div class="leaks">
+      <div class="leak"><span class="minus">−</span><h3>فیش واریزی تأییدنشده</h3><p>پولی که فکر می‌کردید رسیده و هیچ‌وقت نرسید.</p></div>
+      <div class="leak"><span class="minus">−</span><h3>چند سوت مغایرت</h3><p>اختلاف ترازوی کیفی با صندوق که هیچ‌کس گردن نمی‌گیرد.</p></div>
+      <div class="leak"><span class="minus">−</span><h3>لو رفتن فی اختصاصی</h3><p>همکاری که فهمید دیگری ارزان‌تر خریده.</p></div>
+      <div class="leak"><span class="minus">−</span><h3>ردپای گم‌شده پلمپ</h3><p>سکه‌ای که معلوم نیست از کجا آمده و به کجا رفته.</p></div>
+      <div class="leak"><span class="minus">−</span><h3>کسری کارگاه</h3><p>خطای عیار و پرت که تا آخر سال دیده نمی‌شود.</p></div>
+    </div>
+    <p class="leaks-note">فَروَم یک نرم‌افزار حسابداری ساده نیست؛ <b>سیستمی است که این نشتی‌ها را قبل از اتفاق افتادن می‌بندد.</b></p>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section id="pillars" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">چهار ستون فَروَم</div>
+      <h2>یک اکوسیستم، به‌جای چند ابزار جدا از هم</h2>
+    </div>
+    <div class="pillars">
+      <article class="pillar">
+        <div class="pillar-top"><span class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 7h14M3 14l2-7 2 7a2 2 0 0 1-4 0ZM17 14l2-7 2 7a2 2 0 0 1-4 0Z"/></svg></span><h3>حسابداری هوشمند چنددارایی</h3></div>
+        <p>حسابداری طلا فراتر از ریال است؛ همه دارایی‌ها در کسری از ثانیه ته‌به‌ته می‌شوند.</p>
+        <ul class="ticks">
+          <li><b>سبد کامل دارایی:</b> طلای ۱۸ عیار، آبشده، شمش، نقره، مس، ارز، ریال و کالای تهاتری</li>
+          <li><b>مال‌گردانی خودکار:</b> تطبیق آنی طلب و بدهی زنجیره‌ای میان ده‌ها همکار، بدون نقدینگی اضافه</li>
+          <li><b>مدیریت سقف‌های بانکی:</b> تقسیم خودکار مبالغ بزرگ طبق قواعد ساتنا و پایا بین چند حساب مقصد</li>
+          <li><b>کنترل دوگانه موجودی:</b> تعداد فیزیکی اقلام و وزن معادل ۷۵۰، هم‌زمان</li>
+          <li><b>سند با صدا و هوش مصنوعی:</b> فرمان صوتی، اسکن فاکتور و خواندن پیامک بانکی</li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <div class="pillar-top"><span class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg></span><h3>عملیات میدانی و سند تصویری</h3></div>
+        <p>بیشتر کسری‌ها بین گاوصندوق و دست مشتری اتفاق می‌افتد. فَروَم این فاصله را مستند می‌کند.</p>
+        <ul class="ticks">
+          <li><b>عکس زنده ترازو و پلمپ</b> همراه فیش بانکی، هولوگرام، وکیوم سکه و برگه ری‌گیری در پرونده همان سند</li>
+          <li><b>مدارک هویتی</b> خریدار و فروشنده کنار فاکتور، برای روزی که ادعای مغایرت یا اتهام مال‌خری پیش بیاید</li>
+          <li><b>سریال یکتا و اعلام سرقت:</b> انتقال رسمی مالکیت و قفل شدن فوری کالای سرقتی در کل اکوسیستم</li>
+          <li><b>تفکیک مسئولیت سه‌لایه</b> بین صندوق‌دار، ویزیتور و حسابدار</li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <div class="pillar-top"><span class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg></span><h3>اتاق معاملات با برند شما</h3></div>
+        <p>معامله بدون وابستگی به پیام‌رسان و تماس‌های تلفنی پشت‌سرهم.</p>
+        <ul class="ticks">
+          <li><b>نام، دامنه و لوگوی خودتان</b>، متصل به مظنه لحظه‌ای طلا، سکه و ارز</li>
+          <li><b>فی محرمانه:</b> هر همکار فقط مظنه، اجرت و شرایط خودش را می‌بیند</li>
+          <li><b>تخفیف و تسویه خودکار:</b> مثلاً کسر اجرت برای تسویه زیر ۴۸ ساعت یا تخفیف پلکانی بر اساس حجم</li>
+        </ul>
+      </article>
+      <article class="pillar">
+        <div class="pillar-top"><span class="glyph"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.5-3.5 3-5.5 6-5.5s5.5 2 6 5.5"/><path d="M16 4.5a3 3 0 0 1 0 6M18 14.5c1.8.7 2.8 2.6 3 5.5"/></svg></span><h3>پرسنل، حقوق و دسترسی‌ها</h3></div>
+        <p>کارمندها کارشان را انجام می‌دهند، بدون اینکه سرمایه شما را ببینند.</p>
+        <ul class="ticks">
+          <li><b>کاربر نامحدود:</b> پنل جدا برای شاگرد، فروشنده، حسابدار، کیفی و کارگر</li>
+          <li><b>دسترسی‌های قفل‌شده:</b> فاکتور می‌زنند، ولی کل گاوصندوق، سود ماهانه و قیمت خرید بنکدار را نمی‌بینند</li>
+          <li><b>حضور و غیاب متصل به حقوق:</b> اضافه‌کاری، پاداش فروش و مساعده خودکار سند می‌خورد</li>
+          <li><b>ابری و ۲۴ ساعته</b> روی موبایل، تبلت و کامپیوتر، از هر جای دنیا</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="flow-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">معماری پیوسته اطلاعات</div>
+      <h2>پایان جزیره‌های جدا از هم</h2>
+      <p>هر اطلاعاتی یک‌بار ثبت می‌شود و خودش تا دفتر حسابداری می‌رود.</p>
+    </div>
+    <ol class="flow">
+      <li><h3>ترازو و سند تصویری</h3><p>عکس قطعه، وزن، عیار و مدارک در لحظه ثبت می‌شود.</p></li>
+      <li><h3>عملیات و انبار</h3><p>خروج و ورود گاوصندوق، سینی‌ها و کارتابل کیفی.</p></li>
+      <li><h3>معاملات و سفارش‌گیری</h3><p>اتاق معاملات، کاتالوگ همکاران و سفارش آنلاین.</p></li>
+      <li><h3>حسابداری و مال‌گردانی</h3><p>سند خودکار، مانده زنده و تسویه زنجیره‌ای.</p></li>
+    </ol>
+    <div class="replaces"><span>به‌جای:</span><s>دفترچه و فیش کاغذی</s><s>اکسل کارگاه</s><s>گروه‌های پیام‌رسان</s><s>نرم‌افزار حسابداری جدا</s><s>پیامک‌های پراکنده بانک</s></div>
+  </div>
+</section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">برای صنف شما</div>
+      <h2>فَروَم برای هر رکن بازار طلا، جداگانه طراحی شده است</h2>
+    </div>
+    <div class="tabs" role="tablist" aria-label="انتخاب صنف">
+      <button class="tab" role="tab" id="t-vitrin" aria-controls="p-role" aria-selected="true" data-k="vitrin">ویترین‌دار</button>
+      <button class="tab" role="tab" id="t-bonak" aria-controls="p-role" aria-selected="false" data-k="bonak">بنکدار و عمده‌فروش</button>
+      <button class="tab" role="tab" id="t-kifi" aria-controls="p-role" aria-selected="false" data-k="kifi">کیفی و توزیع‌کننده</button>
+      <button class="tab" role="tab" id="t-kargah" aria-controls="p-role" aria-selected="false" data-k="kargah">کارگاه و طلاساز</button>
+      <button class="tab" role="tab" id="t-abshode" aria-controls="p-role" aria-selected="false" data-k="abshode">آبشده‌فروش</button>
+      <button class="tab" role="tab" id="t-sekke" aria-controls="p-role" aria-selected="false" data-k="sekke">سکه‌فروش و صرافی</button>
+    </div>
+    <div class="panel" id="p-role" role="tabpanel" aria-labelledby="t-vitrin">
+      <div>
+        <div class="role" data-f="role">ویترین‌داران و فروشگاه‌های طلا و جواهر</div>
+        <h3 data-f="title">مغازه و گاوصندوق شما، ۲۴ ساعته در مشت شماست.</h3>
+        <p class="intro" data-f="intro">ادعای مغایرت وزن بعد از چند سال، خطای پرسنل در فاکتور، ندیدن موجودی واقعی سینی‌ها و ترس از ورود طلای سرقتی؛ فَروَم همه این‌ها را به یک سپر امنیتی تبدیل می‌کند.</p>
+      </div>
+      <ul class="ticks" data-f="list">
+        <li><b>بایگانی تصویری هر فاکتور:</b> عکس قطعه روی ترازو، برگه عیار، شناسنامه سنگ و کارت ملی مشتری، سال‌ها بعد با یک جست‌وجو</li>
+        <li><b>پرسنل با اختیار محدود:</b> فاکتور می‌زنند و بارکد اسکن می‌کنند، اما سود و سرمایه شما را نمی‌بینند؛ هر تغییر به نام خودشان ثبت می‌شود</li>
+        <li><b>ردیابی گاوصندوق تا سینی:</b> خروج، فروش، ارسال به کارگاه، طلای کهنه، کسر نگین و محاسبه مابه‌التفاوت بدون خطا</li>
+        <li><b>فاکتور الکترونیکی استاندارد اتحادیه</b> با کد قابل استعلام</li>
+        <li><b>حضور و غیاب متصل به حقوق</b> و نظارت ابری از هر جای دنیا</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security" class="sec-dark">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">زنجیره امنیتی سه‌لایه</div>
+      <h2>هیچ گرمی بدون امضای سه نفر جابه‌جا نمی‌شود</h2>
+      <p>هر نقش فقط کار خودش را می‌کند و هر کاری با نام خودش ثبت می‌شود. وقتی چیزی کم شود، معلوم است کجا کم شده.</p>
+    </div>
+    <ul class="layers">
+      <li><div class="lv">لایه اول</div><h3>صندوق‌دار</h3><p>خروج و ورود فیزیکی بار از گاوصندوق را تأیید می‌کند.</p></li>
+      <li><div class="lv">لایه دوم</div><h3>کیفی یا فروشنده</h3><p>تحویل، دریافت وجه و طلای کهنه را همان لحظه با عکس روی موبایل ثبت می‌کند.</p></li>
+      <li><div class="lv">لایه سوم</div><h3>حسابدار</h3><p>اسناد را بازبینی و اصلاح می‌کند و برای ورود به دفتر تأیید نهایی می‌دهد.</p></li>
+    </ul>
+    <div class="proof">
+      <div><b>سریال یکتا برای هر قطعه</b><span>با انتقال رسمی مالکیت</span></div>
+      <div><b>قفل کالای سرقتی</b><span>در کل اکوسیستم، فوری</span></div>
+      <div><b>فی ایزوله هر همکار</b><span>هیچ‌کس قیمت دیگری را نمی‌بیند</span></div>
+      <div><b>ضبط صدای توافق</b><span>کنار سند معامله</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head"><div class="kicker">پرسش‌های رایج</div><h2>قبل از دمو، شاید این‌ها را بپرسید</h2></div>
+    <div class="faq">
+      <details open><summary>فَروَم با یک نرم‌افزار حسابداری طلای معمولی چه فرقی دارد؟</summary><p>نرم‌افزارهای معمولی فقط دفتر حساب را نگه می‌دارند. فَروَم ترازو، گاوصندوق، کیفی، اتاق معاملات، کارگاه، پرسنل و حسابداری را در یک زنجیره وصل می‌کند، پس اطلاعات یک‌بار ثبت می‌شود و خودش تا تراز می‌رود.</p></details>
+      <details><summary>کارمندهای من سود و موجودی کل را می‌بینند؟</summary><p>نه. برای هر نقش دقیقاً تعیین می‌کنید چه چیزی را ببیند. پرسنل می‌توانند فاکتور بزنند و معامله را نهایی کنند، بدون دسترسی به سرمایه گاوصندوق، سود ماهانه یا قیمت خرید از بنکدار.</p></details>
+      <details><summary>همکارانم می‌فهمند من به دیگران چه قیمتی می‌دهم؟</summary><p>نه. در اتاق معاملات و کاتالوگ، هر همکار فقط مظنه، اجرت و شرایط اختصاصی خودش را می‌بیند.</p></details>
+      <details><summary>روی موبایل هم کار می‌کند؟</summary><p>بله. فَروَم ابری است و روی موبایل، تبلت و کامپیوتر کار می‌کند. کیفی‌ها ثبت سند، عکس ترازو و خروج بار را با چند لمس روی گوشی انجام می‌دهند.</p></details>
+      <details><summary>اتاق معاملات با برند خودم یعنی چه؟</summary><p>یک پلتفرم معاملات آنلاین با نام، دامنه و لوگوی خودتان که به مظنه لحظه‌ای بازار وصل است و معاملات تأییدشده را مستقیم به حسابداری می‌فرستد.</p></details>
+      <details><summary>برای کدام صنف‌ها مناسب است؟</summary><p>ویترین‌داران، بنکداران و عمده‌فروشان، کیفی‌ها، کارگاه‌داران و طلاسازان، آبشده‌فروشان و سکه‌فروشان. در دمو، ساختار متناسب با صنف خودتان را می‌بینید.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo" class="demo">
+  <div class="wrap">
+    <div>
+      <div class="kicker" style="color:var(--gold-bright)">دمو اختصاصی</div>
+      <h2>فَروَم را روی فرایندهای واقعی صنف خودتان ببینید</h2>
+      <p class="lead">فرم را پر کنید تا کارشناسان فَروَم ماژول‌های مخصوص کار شما را نشان‌تان بدهند.</p>
+      <div class="contact" id="contact"></div>
+    </div>
+    <form id="demo-form" novalidate>
+      <div class="form-row">
+        <label for="f-name">نام و نام خانوادگی<input id="f-name" name="name" required autocomplete="name"></label>
+        <label for="f-phone">شماره موبایل<input id="f-phone" name="phone" required inputmode="tel" autocomplete="tel" placeholder="۰۹۱۲۱۲۳۴۵۶۷" dir="ltr" style="text-align:right"></label>
+      </div>
+      <div class="form-row">
+        <label for="f-role">صنف
+          <select id="f-role" name="role">
+            <option>ویترین‌دار</option><option>بنکدار و عمده‌فروش</option><option>کیفی و توزیع‌کننده</option><option>کارگاه و طلاساز</option><option>آبشده‌فروش</option><option>سکه‌فروش و صرافی</option>
+          </select>
+        </label>
+        <label for="f-city">شهر<input id="f-city" name="city" autocomplete="address-level2"></label>
+      </div>
+      <label for="f-note">بزرگ‌ترین دغدغه‌تان در کار (اختیاری)<textarea id="f-note" name="note" rows="2"></textarea></label>
+      <button class="btn btn-dark" type="submit">درخواست دمو</button>
+      <p class="hint" id="f-error" role="alert" hidden>لطفاً نام و شماره موبایل را وارد کنید.</p>
+      <div class="out" id="f-out" hidden>
+        <p class="hint">متن درخواست شما آماده است. آن را برای ما بفرستید:</p>
+        <pre id="f-text"></pre>
+        <div class="acts" id="f-acts"></div>
+      </div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>فَروَم · اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر</span><span>از ثبت اولین سوت تا بستن تراز سالانه</span></div></footer>
+
+<script>
+/* تنظیمات تماس: این‌ها را با اطلاعات واقعی پر کنید. خالی بماند، نمایش داده نمی‌شود. */
+var CONTACT = {
+  phone: "",      // مثال: "۰۲۱-۱۲۳۴۵۶۷۸"
+  whatsapp: "",   // فقط رقم با کد کشور، مثال: "989121234567"
+  telegram: ""    // نام کاربری بدون @، مثال: "farvam_support"
+};
+
+var ROLES = {
+  vitrin:{role:"ویترین‌داران و فروشگاه‌های طلا و جواهر",title:"مغازه و گاوصندوق شما، ۲۴ ساعته در مشت شماست.",intro:"ادعای مغایرت وزن بعد از چند سال، خطای پرسنل در فاکتور، ندیدن موجودی واقعی سینی‌ها و ترس از ورود طلای سرقتی؛ فَروَم همه این‌ها را به یک سپر امنیتی تبدیل می‌کند.",list:[
+    ["بایگانی تصویری هر فاکتور:","عکس قطعه روی ترازو، برگه عیار، شناسنامه سنگ و کارت ملی مشتری، سال‌ها بعد با یک جست‌وجو"],
+    ["پرسنل با اختیار محدود:","فاکتور می‌زنند و بارکد اسکن می‌کنند، اما سود و سرمایه شما را نمی‌بینند؛ هر تغییر به نام خودشان ثبت می‌شود"],
+    ["ردیابی گاوصندوق تا سینی:","خروج، فروش، ارسال به کارگاه، طلای کهنه، کسر نگین و محاسبه مابه‌التفاوت بدون خطا"],
+    ["فاکتور الکترونیکی استاندارد اتحادیه","با کد قابل استعلام"],
+    ["حضور و غیاب متصل به حقوق","و نظارت ابری از هر جای دنیا"]]},
+  bonak:{role:"بنکداران و عمده‌فروشان",title:"فی شما محرمانه می‌ماند، شبکه همکاران خودکار می‌چرخد.",intro:"صدها قلم کالا، ده‌ها کارگاه، صدها همکار با شرایط اختصاصی و حجم سنگین تسویه‌های وزنی، ارزی و ریالی؛ فَروَم بنکداری شما را به سفارش‌گیری زنده و موتور تسویه خودکار تبدیل می‌کند.",list:[
+    ["دژ امنیتی فی:","یک‌بار عکس بگیرید؛ هر همکار فقط قیمت، اجرت و شرایط خودش را می‌بیند"],
+    ["سقف و کف سفارش","گرمی یا ریالی، بر اساس اعتبار هر مشتری"],
+    ["موتور تخفیف:","کسر اجرت برای تسویه زیر ۴۸ ساعت یا کاهش پله‌ای قیمت با حجم خرید ماهانه، خودکار"],
+    ["کاتالوگ دیجیتال B2B:","سفارش شبانه‌روزی همکاران، کد کارگاه سازنده و جلوگیری از دوبارفروشی"],
+    ["مال‌گردانی و مانده‌گیری آنی:","بهترین مسیر تهاتر وزنی، ریالی، ارزی و کالایی بین همه همکاران"]]},
+  kifi:{role:"کیفی‌ها و توزیع‌کنندگان",title:"پایان کابوس مغایرت وزن در شلوغی بازار.",intro:"از خروج از گاوصندوق تا تسویه نهایی، مسیر کیفی زنده، مستند و بدون کسری ثبت می‌شود.",list:[
+    ["کارتابل هوشمند بار:","هر توقف و مقصد با سند جدا؛ مانده واقعی کیف بعد از هر توقف"],
+    ["سند تصویری ترازو:","عکس قطعه، چک، فیش واریزی و حتی صدای توافق، همان لحظه روی گوشی"],
+    ["زنجیره سه‌لایه:","تأیید صندوق‌دار، ثبت کیفی، بازبینی حسابدار"],
+    ["ثبت با چند لمس","به‌جای بازسازی حساب‌وکتاب از روی حافظه بعد از برگشت"],
+    ["گزارش کامل تسویه","با بستن کارتابل در پایان سفر"]]},
+  kargah:{role:"کارگاه‌داران، طلاسازان و تولیدکنندگان",title:"از مواد اولیه تا تحویل، هر سوت دیده می‌شود.",intro:"ردیابی کسری مجاز، موجودی دست کارگر و هزینه تمام‌شده، دقیق‌ترین حسابداری صنعتی را لازم دارد.",list:[
+    ["کارت کارگاه با QR:","اسکن کارگر مقصد یعنی تأیید دریافت و قبول مسئولیت کسری همان مرحله"],
+    ["ایستگاه‌های نامحدود:","ذوب، ریخته‌گری، مخراج‌کاری و… با فیلدها و سقف پرت دلخواه"],
+    ["بیلان کسری پرسنل:","کسری مجاز، کسری واقعی، ضایعات قابل بازیافت و خطای پرسنل، جدا از هم"],
+    ["چرخه خاک و قالکاری:","از براده تا شمش بازیافتی با سند خودکار تطبیق"],
+    ["هزینه تمام‌شده و فاکتور بنکدار","با تفکیک وزن خالص، اجرت و ارزش سنگ"]]},
+  abshode:{role:"آبشده‌فروشان و معامله‌گران",title:"پوزیشن‌های باز زیر نظر، ثانیه به ثانیه.",intro:"معاملات آبشده سرعت بالا، رصد دقیق نوسانات و مدیریت پیچیده مالی و بانکی می‌خواهد.",list:[
+    ["اتاق معاملات با برند شما:","مظنه، ضریب سود و تخفیف جدا برای هر همکار؛ معامله تأییدشده مستقیم سند می‌شود"],
+    ["هشدار پوزیشن باز:","نمایش زنده طلا، نقره، مس، ارز و ریال و هشدار ناترازی"],
+    ["کارت یکتای آبشده:","شماره انگ، ری‌گیری، عکس ترازو، وزن ناخالص و معادل ۷۵۰ با تاریخچه کامل"],
+    ["تسویه‌های بزرگ بانکی:","تقسیم خودکار مبالغ طبق سقف‌های ساتنا و پایا بین چند حساب مقصد"],
+    ["تسویه متقاطع","بین طلا، نقره، مس، کالا، ریال و ارز"]]},
+  sekke:{role:"سکه‌فروشان و صرافی‌های طلا",title:"سرعت معامله، همراه با زنجیره اصالت هر سکه.",intro:"در تجارت مسکوکات، اصالت و ردیابی مالکیت به اندازه سرعت اهمیت دارد.",list:[
+    ["بایگانی تصویری پلمپ:","هولوگرام، سریال و وکیوم در لحظه ورود و خروج، کنار مدارک هویتی"],
+    ["زنجیره تأمین:","مسیر کامل خرید تا واگذاری هر سکه برای روزی که ادعایی پیش بیاید"],
+    ["اتاق معاملات مسکوکات","با حاشیه سود و مظنه جدا برای هر همکار"],
+    ["موجودی دوگانه:","تعداد فیزیکی سکه و ارزش وزنی و ریالی معادل، با هشدار پوزیشن باز"],
+    ["تسویه ترکیبی:","سکه با آبشده، نقره، ارز و ریال با محاسبه دقیق مابه‌التفاوت"]]}
+};
+
+(function(){
+  var panel=document.getElementById("p-role");
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+  function show(k){
+    var r=ROLES[k];
+    tabs.forEach(function(t){t.setAttribute("aria-selected",t.dataset.k===k?"true":"false");t.tabIndex=t.dataset.k===k?0:-1});
+    panel.setAttribute("aria-labelledby","t-"+k);
+    panel.querySelector('[data-f="role"]').textContent=r.role;
+    panel.querySelector('[data-f="title"]').textContent=r.title;
+    panel.querySelector('[data-f="intro"]').textContent=r.intro;
+    panel.querySelector('[data-f="list"]').innerHTML=r.list.map(function(i){return"<li><b>"+esc(i[0])+"</b> "+esc(i[1])+"</li>"}).join("");
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){show(t.dataset.k)});
+    t.addEventListener("keydown",function(e){
+      var d=e.key==="ArrowLeft"?1:e.key==="ArrowRight"?-1:0; if(!d)return;
+      var n=tabs[(i+d+tabs.length)%tabs.length]; n.focus(); show(n.dataset.k);
+    });
+  });
+
+  var c=document.getElementById("contact"), rows=[];
+  if(CONTACT.phone) rows.push("<div><span>تلفن:</span><b class=\"num\">"+esc(CONTACT.phone)+"</b></div>");
+  if(CONTACT.telegram) rows.push("<div><span>تلگرام:</span><b dir=\"ltr\">@"+esc(CONTACT.telegram)+"</b></div>");
+  if(CONTACT.whatsapp) rows.push("<div><span>واتساپ:</span><b dir=\"ltr\">+"+esc(CONTACT.whatsapp)+"</b></div>");
+  c.innerHTML=rows.join("");
+
+  var f=document.getElementById("demo-form");
+  f.addEventListener("submit",function(e){
+    e.preventDefault();
+    var v=function(id){return document.getElementById(id).value.trim()};
+    var err=document.getElementById("f-error");
+    if(!v("f-name")||!v("f-phone")){err.hidden=false;return}
+    err.hidden=true;
+    var text="درخواست دمو فَروَم\nنام: "+v("f-name")+"\nموبایل: "+v("f-phone")+"\nصنف: "+v("f-role")+(v("f-city")?"\nشهر: "+v("f-city"):"")+(v("f-note")?"\nدغدغه: "+v("f-note"):"");
+    document.getElementById("f-text").textContent=text;
+    var acts=document.getElementById("f-acts"); acts.innerHTML="";
+    var copy=document.createElement("button"); copy.type="button"; copy.className="btn btn-dark"; copy.textContent="کپی متن";
+    copy.addEventListener("click",function(){
+      var done=function(){copy.textContent="کپی شد"};
+      try{navigator.clipboard.writeText(text).then(done,function(){sel()})}catch(x){sel()}
+      function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById("f-text"));var s=getSelection();s.removeAllRanges();s.addRange(r);copy.textContent="متن انتخاب شد؛ کپی کنید"}
+    });
+    acts.appendChild(copy);
+    if(CONTACT.whatsapp){var a=document.createElement("a");a.className="btn btn-gold";a.target="_blank";a.rel="noopener";a.href="https://wa.me/"+CONTACT.whatsapp+"?text="+encodeURIComponent(text);a.textContent="ارسال در واتساپ";acts.appendChild(a)}
+    if(CONTACT.telegram){var b=document.createElement("a");b.className="btn btn-gold";b.target="_blank";b.rel="noopener";b.href="https://t.me/"+CONTACT.telegram;b.textContent="باز کردن تلگرام";acts.appendChild(b)}
+    document.getElementById("f-out").hidden=false;
+  });
+})();
+</script>
+</div>
+</body>
+</html>

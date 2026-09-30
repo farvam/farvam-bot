@@ -20,12 +20,12 @@
 /* کهکشان ذرات طلایی: هزاران ذره ریز که آرام دور یک مرکز می‌چرخند و چشمک می‌زنند. */
 (function(){
   var cv=document.getElementById("galaxy"); if(!cv||!cv.getContext)return;
-  var ctx=cv.getContext("2d"), dpr=Math.min(window.devicePixelRatio||1,2), W=0,H=0, stars=[], dark=false;
+  var ctx=cv.getContext("2d",{alpha:true}), dpr=1, W=0,H=0, stars=[], dark=false, scrolling=0, scrollT=0, lastDraw=0, raf=0;
   var still=matchMedia("(prefers-reduced-motion: reduce)").matches;
   function isDark(){var t=document.documentElement.getAttribute("data-theme");return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
   function build(){
     W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
-    var n=Math.round(Math.min(1400,Math.max(500,W*H/1100))); stars=[];
+    var small=W<760, n=Math.round(small?Math.min(260,W*H/1800):Math.min(650,W*H/2200)); stars=[];
     var arms=3, R=Math.hypot(W,H)*.62;
     for(var i=0;i<n;i++){
       var k=Math.random(), arm=i%arms, r=Math.pow(k,.65)*R;
@@ -35,6 +35,9 @@
     }
   }
   var cx=0,cy=0,t0=performance.now();
+  function loop(now){ raf=0; if(document.hidden)return; if(!scrolling&&now-lastDraw>33){lastDraw=now;frame(now)} if(!still)raf=requestAnimationFrame(loop); }
+  addEventListener("scroll",function(){scrolling=1;clearTimeout(scrollT);scrollT=setTimeout(function(){scrolling=0},140)},{passive:true});
+  document.addEventListener("visibilitychange",function(){if(!document.hidden&&!still&&!raf)raf=requestAnimationFrame(loop)});
   function frame(now){
     var t=(now-t0)/1000; dark=isDark();
     ctx.clearRect(0,0,W,H);
@@ -53,12 +56,10 @@
       ctx.beginPath();ctx.arc(x,y,p.s,0,6.283);ctx.fill();
       if(p.s>1.55&&tw>.85){ctx.fillStyle="rgba("+col+","+(al*.25).toFixed(3)+")";ctx.beginPath();ctx.arc(x,y,p.s*3.2,0,6.283);ctx.fill()}
     }
-    if(!still)requestAnimationFrame(frame);
   }
   build(); addEventListener("resize",function(){build();if(still)frame(performance.now())});
   if(still){frame(performance.now());new MutationObserver(function(){frame(performance.now())}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]})}
-  else requestAnimationFrame(frame);
-  document.addEventListener("visibilitychange",function(){if(!document.hidden&&!still)t0=performance.now()-((performance.now()-t0))});
+  else raf=requestAnimationFrame(loop);
 })();
 
 /* جلوه سه‌بعدی: کارت‌های تصویر با حرکت ماوس می‌چرخند (فقط روی دستگاه‌های دارای ماوس). */

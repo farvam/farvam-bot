@@ -110,6 +110,17 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
             elseif (function_exists('imagewebp')) { $im = $types[$info[2]]($f['tmp_name']); imagepalettetotruecolor($im); imagealphablending($im, true); imagesavealpha($im, true); $ok = imagewebp($im, $dest, 86); imagedestroy($im); }
             else { flash('هاست شما تبدیل به WEBP را پشتیبانی نمی‌کند؛ لطفاً تصویر را با فرمت WEBP بارگذاری کنید.'); go('tab=images'); }
             flash($ok ? 'تصویر جایگزین شد. اگر عکس شامل اطلاعات مشتری است، قبل از بارگذاری آن را محو کنید.' : 'بارگذاری نشد.'); go('tab=images');
+        case 'font':
+            $dir = dirname(__DIR__) . '/assets/fonts/';
+            if (!empty($_POST['remove'])) { foreach (glob($dir . 'custom-display.*') as $f) @unlink($f); flash('فونت اختصاصی حذف شد؛ تیترها با نستعلیق پیش‌فرض نمایش داده می‌شوند.'); go('tab=font'); }
+            $f = $_FILES['file'] ?? null;
+            if (!$f || $f['error'] !== UPLOAD_ERR_OK) { flash('فایلی انتخاب نشده بود.'); go('tab=font'); }
+            $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, ['woff2', 'woff', 'ttf', 'otf'], true) || $f['size'] > 4 * 1024 * 1024) { flash('فقط فایل فونت WOFF2، WOFF، TTF یا OTF تا ۴ مگابایت.'); go('tab=font'); }
+            $head = file_get_contents($f['tmp_name'], false, null, 0, 4);
+            if (!in_array($head, ["wOF2", "wOFF", "\x00\x01\x00\x00", "OTTO", "true"], true)) { flash('این فایل فونت معتبر نیست.'); go('tab=font'); }
+            foreach (glob($dir . 'custom-display.*') as $old) @unlink($old);
+            flash(move_uploaded_file($f['tmp_name'], $dir . 'custom-display.' . $ext) ? 'فونت تیترها جایگزین شد. سایت را با Ctrl+F5 تازه کنید.' : 'بارگذاری نشد؛ پوشه assets/fonts باید قابل نوشتن باشد.'); go('tab=font');
         case 'password':
             if (!password_verify((string)$_POST['current'], admin_hash())) { flash('رمز فعلی اشتباه است.'); go('tab=security'); }
             $n = (string)$_POST['new'];
@@ -214,7 +225,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 <header>
   <b>پنل مدیریت فَروَم</b>
   <nav>
-    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'images' => 'تصاویر', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
+    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
     <a href="?tab=<?= $k ?>" class="<?= $tab === $k ? 'on' : '' ?>"><?= $v ?></a>
     <?php endforeach; ?>
     <a href="<?= h(url_home()) ?>" target="_blank">مشاهده سایت ↗</a>
@@ -317,6 +328,20 @@ function renum(fs){var path=fs.dataset.path.split('.'),base='f['+path.join('][')
     <textarea name="json" class="code" spellcheck="false"><?= h(json_encode(load_json($which), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></textarea>
     <div class="bar"><button class="btn btn-gold">ذخیره</button></div>
   </form>
+</div>
+
+<?php elseif ($tab === 'font'): $cf = glob(dirname(__DIR__) . '/assets/fonts/custom-display.*'); ?>
+<div class="card" style="max-width:640px">
+  <h3 style="margin-top:0">فونت تیترها</h3>
+  <p>تیترهای سایت الان با <b><?= $cf ? 'فونت اختصاصی شما (' . h(basename($cf[0])) . ')' : 'نستعلیق مدرن (Noto Nastaliq)' ?></b> نمایش داده می‌شوند.</p>
+  <p class="muted">برای شکسته نستعلیق یا نستعلیقی که حروف کشیده (ـــ) را پشتیبانی می‌کند، فایل فونت را اینجا بارگذاری کنید. فقط فونتی را بارگذاری کنید که مجوز استفاده در وب‌سایت را دارید. بعد از بارگذاری، برای کشیدن حروف در تیترها از «ـ» (Shift+J در صفحه‌کلید فارسی) استفاده کنید؛ مثلاً «طلـــا».</p>
+  <form method="post" enctype="multipart/form-data"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="font">
+    <label class="fld"><span>فایل فونت (WOFF2، WOFF، TTF یا OTF)</span><input type="file" name="file" accept=".woff2,.woff,.ttf,.otf" required></label>
+    <button class="btn btn-gold">بارگذاری و استفاده</button>
+  </form>
+<?php if ($cf): ?>
+  <form method="post" style="margin-top:12px"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="font"><input type="hidden" name="remove" value="1"><button class="btn btn-red">برگشت به نستعلیق پیش‌فرض</button></form>
+<?php endif; ?>
 </div>
 
 <?php elseif ($tab === 'security'): ?>

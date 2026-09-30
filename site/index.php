@@ -52,11 +52,10 @@ $layerIcons = [
   <div class="facets" aria-hidden="true"><i style="--s:34px;--d:7s;top:12%;left:8%"></i><i style="--s:18px;--d:9s;top:62%;left:4%"></i><i style="--s:26px;--d:8s;top:78%;left:46%"></i><i style="--s:14px;--d:6s;top:20%;left:52%"></i><i style="--s:22px;--d:10s;top:8%;right:6%"></i></div>
   <div class="logo3d-stage rise" role="img" aria-label="لوگوی فَروَم">
     <div class="logo3d-tilt" id="logo3d"><div class="logo3d">
-<?php $m = "--m:url('" . $b . "images/logo-gold.png')"; for ($i = 18; $i >= 1; $i--): ?>
-      <i class="ly" style="<?= $m ?>;--i:<?= $i ?>"></i>
+<?php for ($i = 12; $i >= 1; $i--): ?>
+      <img class="ly" src="<?= $b ?>images/logo-bronze.webp" alt="" width="560" height="425" style="--i:<?= $i ?>" decoding="async">
 <?php endfor; ?>
-      <i class="ly front" style="<?= $m ?>"></i>
-      <i class="ly shine" style="<?= $m ?>"></i>
+      <img class="ly front" src="<?= $b ?>images/logo-metal.webp" alt="" width="560" height="425" fetchpriority="high">
     </div></div>
     <div class="logo3d-floor"></div>
   </div>

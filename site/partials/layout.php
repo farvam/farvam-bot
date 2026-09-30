@@ -45,10 +45,12 @@ function page_start(array $m): void {
 <link rel="icon" href="<?= $b ?>images/logo-mark-deep.png" media="(prefers-color-scheme: light)">
 <link rel="icon" href="<?= $b ?>images/logo-mark-gold.png" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="<?= $b ?>images/logo-coin.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Vazirmatn:wght@400;500;700;800&display=swap">
-<link rel="stylesheet" href="<?= $b ?>assets/style.css?v=3">
+<link rel="preload" href="<?= $b ?>assets/fonts/vazirmatn-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<?= $b ?>assets/fonts/nastaliq-bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="<?= $b ?>assets/style.css?v=4">
+<?php $cf = glob(__DIR__ . '/../assets/fonts/custom-display.*'); if ($cf): $ext = pathinfo($cf[0], PATHINFO_EXTENSION); $fmt = ['woff2' => 'woff2', 'woff' => 'woff', 'ttf' => 'truetype', 'otf' => 'opentype'][$ext] ?? 'truetype'; ?>
+<style>@font-face{font-family:"Farvam Custom";src:url(<?= $b ?>assets/fonts/custom-display.<?= h($ext) ?>?<?= filemtime($cf[0]) ?>) format("<?= $fmt ?>");font-display:swap}:root{--display:"Farvam Custom","Farvam Nastaliq","Vazirmatn",Tahoma,serif}</style>
+<?php endif; ?>
 <?php foreach (($m['ld'] ?? []) as $ld) echo json_ld(['@context' => 'https://schema.org'] + $ld), "\n"; ?>
 <?php if (c('seo.google_verify')): ?><meta name="google-site-verification" content="<?= t('seo.google_verify') ?>">
 <?php endif; ?>
@@ -143,7 +145,7 @@ function page_end(bool $withEngine = false): void {
 </footer>
 </div>
 <script>window.FARVAM=<?= json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;</script>
-<script src="<?= $b ?>assets/app.js?v=3" defer></script>
+<script src="<?= $b ?>assets/app.js?v=4" defer></script>
 </body>
 </html>
 <?php

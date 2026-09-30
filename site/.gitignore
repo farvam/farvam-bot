@@ -4,3 +4,4 @@ data/admin.json
 data/*.tmp
 data/leads.json
 data/lead-rate.json
+assets/fonts/custom-display.*

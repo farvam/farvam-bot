@@ -169,9 +169,9 @@ var UTM = ""; try{var q=new URLSearchParams(location.search);UTM=[q.get("utm_sou
     var err=document.getElementById("f-error");
     if(!v("f-name")||!v("f-phone")){err.hidden=false;return}
     err.hidden=true;
-    var text=(F.leadTitle||"درخواست دمو فَروَم")+"\nنام: "+v("f-name")+"\nموبایل: "+v("f-phone")+"\nصنف: "+v("f-role")+(v("f-city")?"\nشهر: "+v("f-city"):"")+(v("f-note")?"\nدغدغه: "+v("f-note"):"")+(v("f-src")?"\nآشنایی از: "+v("f-src"):"")+(UTM?"\nکانال تبلیغ: "+UTM:"");
+    var text=(F.leadTitle||"درخواست دمو فَروَم")+"\nنام: "+v("f-name")+"\nموبایل: "+v("f-phone")+"\nصنف: "+v("f-role")+(v("f-city")?"\nشهر: "+v("f-city"):"")+(v("f-note")?"\nدغدغه: "+v("f-note"):"")+(v("f-src")?"\nآشنایی از: "+v("f-src"):"")+(UTM?"\nکانال تبلیغ: "+UTM:"")+(window.FARVAM_AB?"\n"+window.FARVAM_AB:"");
     document.getElementById("f-text").textContent=text;
-    if(F.leadUrl){try{fetch(F.leadUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:v("f-name"),phone:v("f-phone"),role:v("f-role"),city:v("f-city"),src:v("f-src"),note:v("f-note"),utm:UTM,page:location.pathname,website:(document.getElementById("f-web")||{}).value||""})}).then(function(r){var ok=document.getElementById("f-saved");if(ok&&r.ok)ok.hidden=false}).catch(function(){})}catch(x){}}
+    if(F.leadUrl){try{fetch(F.leadUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:v("f-name"),phone:v("f-phone"),role:v("f-role"),city:v("f-city"),src:v("f-src"),note:v("f-note"),utm:UTM+(window.FARVAM_AB?" | "+window.FARVAM_AB:""),page:location.pathname,website:(document.getElementById("f-web")||{}).value||""})}).then(function(r){var ok=document.getElementById("f-saved");if(ok&&r.ok)ok.hidden=false;if(r.ok){try{if(window.gtag)gtag("event","generate_lead",{method:"farvam_form"});(window.dataLayer=window.dataLayer||[]).push({event:"farvam_lead"});if(F.conversion){var sc=document.createElement("div");sc.innerHTML=F.conversion;[].forEach.call(sc.querySelectorAll("script"),function(o){var n=document.createElement("script");if(o.src)n.src=o.src;else n.textContent=o.textContent;document.body.appendChild(n)})}}catch(e){}}}).catch(function(){})}catch(x){}}
     var acts=document.getElementById("f-acts"); acts.innerHTML="";
     var wa=document.createElement("a");wa.className="btn btn-gold";wa.target="_blank";wa.rel="noopener";wa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(text);wa.textContent="ارسال در واتساپ";acts.appendChild(wa);
     var copy=document.createElement("button");copy.type="button";copy.className="btn btn-glass";copy.textContent="کپی متن";
@@ -231,4 +231,35 @@ var UTM = ""; try{var q=new URLSearchParams(location.search);UTM=[q.get("utm_sou
   hero.addEventListener("mousemove",function(e){var r=el.getBoundingClientRect(),dx=(e.clientX-(r.left+r.width/2))/innerWidth,dy=(e.clientY-(r.top+r.height/2))/innerHeight;
     el.style.transform="rotateY("+(dx*40).toFixed(1)+"deg) rotateX("+(-dy*30).toFixed(1)+"deg)"});
   hero.addEventListener("mouseleave",function(){el.style.transform=""});
+})();
+
+/* v5: A/B headline, calculator → form, conversion code, offer countdown, video modal */
+(function(){
+  var F=window.FARVAM||{};
+  // A/B: one headline variant per visitor, kept in this browser and sent with the lead
+  var h=document.getElementById("h1ab");
+  if(h){ try{ var v=JSON.parse(h.dataset.variants||"[]"); if(v.length>1){ var k=null; try{k=localStorage.getItem("farvam-ab")}catch(e){}
+      if(k===null||!v[+k]){k=String(Math.floor(Math.random()*v.length)); try{localStorage.setItem("farvam-ab",k)}catch(e){}}
+      h.innerHTML=v[+k]; window.FARVAM_AB="تیتر "+(+k+1); } }catch(e){} }
+  // calculator result goes into the form note
+  var cb=document.getElementById("c-to-form");
+  if(cb) cb.addEventListener("click",function(){
+    var y=(document.getElementById("c-year-g")||{}).textContent||"", t=(document.getElementById("c-year-t")||{}).textContent||"";
+    var note=document.getElementById("f-note"); if(note){ note.value="برآورد نشتی سالانه من: "+y+" گرم"+(/\d|[۰-۹]/.test(t)&&t.indexOf("تومان")>-1?" (حدود "+t+")":"")+". می‌خواهم با کارشناس بررسی کنم."; }
+    var d=document.getElementById("demo"); if(d) d.scrollIntoView({behavior:"smooth"}); setTimeout(function(){var n=document.getElementById("f-name"); if(n) n.focus({preventScroll:true})},600);
+  });
+  // countdown to offer deadline
+  [].forEach.call(document.querySelectorAll(".deadline"),function(el){
+    var end=Date.parse(el.dataset.deadline), out=el.querySelector(".cd"); if(!end||!out)return;
+    var fa=function(n){return Number(n).toLocaleString("fa-IR")};
+    function tick(){var s=Math.max(0,Math.floor((end-Date.now())/1000)); if(!s){el.hidden=true;return}
+      out.textContent=fa(Math.floor(s/86400))+" روز و "+fa(Math.floor(s%86400/3600))+" ساعت مانده"; }
+    tick(); setInterval(tick,60000);
+  });
+  // hero video modal (loads the player only when opened)
+  var vb=document.getElementById("vopen"), vm=document.getElementById("vmodal");
+  if(vb&&vm){ var fr=vm.querySelector(".vframe");
+    vb.addEventListener("click",function(){ if(!fr.innerHTML) fr.innerHTML=fr.dataset.embed; if(vm.showModal) vm.showModal(); else vm.setAttribute("open",""); });
+    vm.addEventListener("close",function(){ fr.innerHTML=""; });
+    vm.addEventListener("click",function(e){ if(e.target===vm) vm.close(); }); }
 })();

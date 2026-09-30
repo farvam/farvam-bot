@@ -75,7 +75,7 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
             foreach ((array)($_POST['empty'] ?? []) as $path) { $ref = &$new; foreach (explode('.', $path) as $k) { if (!isset($ref[$k])) { unset($ref); continue 2; } $ref = &$ref[$k]; } $ref = []; unset($ref); }
             flash(save_json('content', $new) ? 'تغییرات ذخیره شد.' : 'ذخیره نشد.'); go('tab=content');
         case 'save_json':
-            $which = in_array($_POST['which'] ?? '', ['content', 'engine'], true) ? $_POST['which'] : 'content';
+            $which = in_array($_POST['which'] ?? '', ['content', 'engine', 'presentation'], true) ? $_POST['which'] : 'content';
             $d = json_decode((string)($_POST['json'] ?? ''), true);
             if (!is_array($d)) { flash('JSON نامعتبر است؛ چیزی ذخیره نشد. خطا: ' . json_last_error_msg()); go("tab=$tab"); }
             flash(save_json($which, $d) ? 'ذخیره شد.' : 'ذخیره نشد.'); go("tab=$tab");
@@ -121,6 +121,17 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!in_array($head, ["wOF2", "wOFF", "\x00\x01\x00\x00", "OTTO", "true"], true)) { flash('این فایل فونت معتبر نیست.'); go('tab=font'); }
             foreach (glob($dir . 'custom-display.*') as $old) @unlink($old);
             flash(move_uploaded_file($f['tmp_name'], $dir . 'custom-display.' . $ext) ? 'فونت تیترها جایگزین شد. سایت را با Ctrl+F5 تازه کنید.' : 'بارگذاری نشد؛ پوشه assets/fonts باید قابل نوشتن باشد.'); go('tab=font');
+        case 'media':
+            $f = $_FILES['file'] ?? null;
+            if (!$f || $f['error'] !== UPLOAD_ERR_OK) { flash('فایلی انتخاب نشده بود یا حجم آن از سقف هاست بیشتر است (upload_max_filesize = ' . ini_get('upload_max_filesize') . ').'); go('tab=media'); }
+            $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
+            $okExt = ['mp4' => 'video/', 'webm' => 'video/', 'm4v' => 'video/', 'jpg' => 'image/', 'jpeg' => 'image/', 'png' => 'image/', 'webp' => 'image/', 'pdf' => 'application/pdf', 'pptx' => 'application/'];
+            $mime = function_exists('mime_content_type') ? (string)mime_content_type($f['tmp_name']) : '';
+            if (!isset($okExt[$ext]) || ($mime !== '' && strpos($mime, rtrim($okExt[$ext], '/')) !== 0 && $ext !== 'pptx')) { flash('فقط ویدیو (MP4/WEBM)، تصویر (JPG/PNG/WEBP)، PDF یا PPTX.'); go('tab=media'); }
+            $name = trim(preg_replace('/[^a-z0-9\-]+/', '-', strtolower(pathinfo($f['name'], PATHINFO_FILENAME))), '-') ?: 'file';
+            $dir = dirname(__DIR__) . '/files/'; if (!is_dir($dir)) @mkdir($dir, 0775, true);
+            $dest = ($_POST['as_pptx'] ?? '') === '1' && $ext === 'pptx' ? 'farvam-presentation.pptx' : $name . '-' . date('ymdHis') . '.' . $ext;
+            flash(move_uploaded_file($f['tmp_name'], $dir . $dest) ? 'بارگذاری شد. آدرس فایل: files/' . $dest : 'بارگذاری نشد؛ پوشه files باید قابل نوشتن باشد.'); go('tab=media');
         case 'password':
             if (!password_verify((string)$_POST['current'], admin_hash())) { flash('رمز فعلی اشتباه است.'); go('tab=security'); }
             $n = (string)$_POST['new'];
@@ -143,7 +154,7 @@ $L = ['seo' => 'سئو و متا', 'site_name' => 'نام سایت', 'title' => 
  'compare' => 'جدول مقایسه', 'cols' => 'ستون‌ها', 'short' => 'نام کوتاه ستون‌ها (موبایل)', 'rows' => 'ردیف‌ها', 'roles' => 'صنف‌ها', 'tab' => 'برچسب تب', 'role' => 'عنوان صنف', 'list' => 'بندها',
  'pitch' => 'موتور توضیحات (متن بخش)', 'security' => 'امنیت', 'layers' => 'لایه‌ها', 'lv' => 'شماره لایه', 'proof' => 'نکته‌ها', 'b' => 'عنوان', 's' => 'توضیح',
  'faq' => 'پرسش‌های رایج', 'q' => 'پرسش', 'a' => 'پاسخ', 'steps' => 'مراحل شروع', 'blog' => 'بخش مقالات', 'all' => 'دکمه همه مقاله‌ها', 'page_title' => 'عنوان صفحه مقالات', 'page_description' => 'توضیح صفحه مقالات', 'cta_title' => 'عنوان کادر پیشنهاد', 'cta_text' => 'متن کادر پیشنهاد',
- 'demo' => 'فرم شروع', 'lead' => 'متن', 'submit' => 'متن دکمه فرم', 'sources' => 'گزینه‌های «از کجا آشنا شدید»', 'footer' => 'پاورقی', 'text' => 'متن', 'gallery' => 'تصاویر گالری', 'acc' => 'حسابداری', 'ops' => 'عملیاتی', 'mgmt' => 'مدیریتی', 'labels' => 'نام تصاویر', 'google_verify' => 'کد تأیید Google Search Console', 'analytics_head' => 'کد آمار بازدید (Google Analytics یا Clarity)', 'testimonials' => 'نظر مشتری‌ها', 'name' => 'نام', 'shop' => 'مغازه و شهر'];
+ 'demo' => 'فرم شروع', 'lead' => 'متن', 'submit' => 'متن دکمه فرم', 'sources' => 'گزینه‌های «از کجا آشنا شدید»', 'footer' => 'پاورقی', 'text' => 'متن', 'gallery' => 'تصاویر گالری', 'acc' => 'حسابداری', 'ops' => 'عملیاتی', 'mgmt' => 'مدیریتی', 'labels' => 'نام تصاویر', 'google_verify' => 'کد تأیید Google Search Console', 'analytics_head' => 'کد آمار بازدید (Google Analytics یا Clarity)', 'testimonials' => 'نظر مشتری‌ها', 'name' => 'نام', 'shop' => 'مغازه و شهر', 'deadline' => 'تاریخ پایان پیشنهاد (میلادی، مثل 2026-11-20؛ خالی = بدون مهلت)', 'deadline_label' => 'برچسب مهلت', 'callback_text' => 'قول زمان تماس', 'title_variants_html' => 'نسخه‌های تیتر اصلی (آزمون A/B)', 'video_cta' => 'متن دکمه ویدیو', 'conversion_js' => 'کد ثبت تبدیل (بعد از ثبت فرم اجرا می‌شود؛ یکتانت، گوگل ادز و…)', 'presentation' => 'کادر معرفی تعاملی', 'download' => 'متن لینک دانلود پاورپوینت', 'videos' => 'ویدیوها', 'url' => 'لینک ویدیو (آپارات، یوتیوب یا files/…mp4)', 'desc' => 'توضیح', 'follow' => 'اینستاگرام و سایت فروم', 'instagram_cta' => 'متن دکمه اینستاگرام', 'site_url' => 'آدرس سایت فروم', 'site_cta' => 'متن دکمه سایت', 'pricing' => 'قیمت و پلن‌ها', 'plans' => 'پلن‌ها', 'price' => 'قیمت', 'period' => 'دوره', 'features' => 'امکانات', 'highlight' => 'پلن پیشنهادی', 'about' => 'درباره ما / بنیان‌گذار', 'photo' => 'عکس (آدرس فایل، مثل files/me.jpg)', 'story_html' => 'داستان', 'facts' => 'واقعیت‌ها (سال شروع، تعداد مشتری…)', 'trust' => 'اعتماد', 'enamad_html' => 'کد نماد اعتماد (اینماد)', 'guarantees' => 'تضمین‌ها (کنار فرم)', 'referral' => 'معرفی به همکار', 'message' => 'متن پیام معرفی', 'segments' => 'صفحه‌های صنفی', 'more' => 'دکمه امکانات کامل', 'title_suffix' => 'پسوند عنوان'];
 $SKIP = ['_help'];
 function lab($k) { global $L; return $L[$k] ?? (is_int($k) ? 'مورد ' . fa_digits($k + 1) : $k); }
 function field($name, $path, $key, $val) {
@@ -163,7 +174,7 @@ function field($name, $path, $key, $val) {
         echo '</fieldset>';
         return;
     }
-    $long = mb_strlen((string)$val) > 70 || str_ends_with((string)$key, '_html') || in_array($key, ['description', 'intro', 'a', 'd', 'text', 'lead', 'note', 'analytics_head'], true);
+    $long = mb_strlen((string)$val) > 70 || str_ends_with((string)$key, '_html') || in_array($key, ['description', 'intro', 'a', 'd', 'text', 'lead', 'note', 'analytics_head', 'conversion_js', 'enamad_html', 'message'], true);
     echo '<label class="fld"><span>' . h(lab($key)) . '</span>';
     echo $long ? '<textarea name="' . h($name) . '" rows="' . max(2, min(8, (int)ceil(mb_strlen((string)$val) / 80))) . '">' . h($val) . '</textarea>'
                : '<input name="' . h($name) . '" value="' . h($val) . '"' . (preg_match('/url|tel|whatsapp|telegram|instagram|bale|eitaa|img|og_image/', (string)$key) ? ' dir="ltr"' : '') . '>';
@@ -225,7 +236,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 <header>
   <b>پنل مدیریت فَروَم</b>
   <nav>
-    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
+    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'media' => 'ویدیو و فایل', 'present' => 'ارائه معرفی', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
     <a href="?tab=<?= $k ?>" class="<?= $tab === $k ? 'on' : '' ?>"><?= $v ?></a>
     <?php endforeach; ?>
     <a href="<?= h(url_home()) ?>" target="_blank">مشاهده سایت ↗</a>
@@ -249,7 +260,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 <p class="muted">هر بخش را باز کنید، متن یا لینک را عوض کنید و «ذخیره» را بزنید. در متن‌هایی که عنوانشان «تیتر اصلی»، «متن» یا «بندها» است، می‌توانید از <code>&lt;b&gt;</code> برای پررنگ و <code>&lt;br&gt;</code> برای شکستن خط استفاده کنید.</p>
 <form method="post" id="cform"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="save_content">
 <?php foreach ($c as $k => $v): if (in_array($k, $SKIP, true)) continue; ?>
-  <details class="sec"<?= in_array($k, ['contact', 'offer'], true) ? ' open' : '' ?>><summary><?= h(lab($k)) ?></summary><div><?php field("f[$k]", $k, $k, $v); ?></div></details>
+  <details class="sec"<?= in_array($k, ['contact', 'offer', 'social', 'follow', 'videos'], true) ? ' open' : '' ?>><summary><?= h(lab($k)) ?></summary><div><?php field("f[$k]", $k, $k, $v); ?></div></details>
 <?php endforeach; ?>
   <div class="bar"><button class="btn btn-gold">ذخیره تغییرات</button><a class="btn btn-ghost" href="<?= h(url_home()) ?>" target="_blank">پیش‌نمایش سایت</a></div>
 </form>
@@ -317,9 +328,26 @@ function renum(fs){var path=fs.dataset.path.split('.'),base='f['+path.join('][')
 <?php endforeach; ?>
 </div>
 
-<?php elseif ($tab === 'engine' || $tab === 'advanced'): $which = $tab === 'engine' ? 'engine' : 'content'; ?>
+<?php elseif ($tab === 'media'): $files = glob(dirname(__DIR__) . '/files/*') ?: []; ?>
 <div class="card">
-<?php if ($which === 'engine'): ?>
+  <h3 style="margin-top:0">ویدیوهای معرفی و فایل‌ها</h3>
+  <p class="muted">ویدیو را می‌توانید در آپارات یا یوتیوب بگذارید و فقط لینکش را در «متن‌ها و لینک‌ها» ← «ویدیوها» وارد کنید (سریع‌تر و بدون مصرف هاست). یا فایل MP4 را همین‌جا بارگذاری و آدرسی که نشان داده می‌شود را همان‌جا بگذارید. سقف حجم بارگذاری هاست شما: <b dir="ltr"><?= h(ini_get('upload_max_filesize')) ?></b>.</p>
+  <p class="muted">جای ویدیوها: دکمه «ویدیوی معرفی» بالای صفحه اصلی (اولین ویدیوی بدون صنف)، بخش «ویدیو» صفحه اصلی، و صفحه هر صنف (ویدیوهایی که صنفشان همان است: vitrin، bonak، kifi، kargah، abshode، sekke).</p>
+  <form method="post" enctype="multipart/form-data"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="media">
+    <label class="fld"><span>فایل (ویدیو، عکس بنیان‌گذار، PDF یا پاورپوینت)</span><input type="file" name="file" required></label>
+    <label class="chk"><input type="checkbox" name="as_pptx" value="1"> این پاورپوینت جایگزین فایل «دانلود پاورپوینت معرفی» سایت شود</label>
+    <button class="btn btn-gold">بارگذاری</button>
+  </form>
+  <table style="margin-top:14px"><thead><tr><th>فایل</th><th>حجم</th><th>آدرس برای کپی</th></tr></thead><tbody>
+  <?php foreach ($files as $fp): ?><tr><td><?= h(basename($fp)) ?></td><td><?= fa_digits(round(filesize($fp) / 1048576, 1)) ?> MB</td><td dir="ltr"><code>files/<?= h(basename($fp)) ?></code></td></tr><?php endforeach; ?>
+  </tbody></table>
+</div>
+
+<?php elseif ($tab === 'engine' || $tab === 'advanced' || $tab === 'present'): $which = $tab === 'engine' ? 'engine' : ($tab === 'present' ? 'presentation' : 'content'); ?>
+<div class="card">
+<?php if ($which === 'presentation'): ?>
+  <p>متن اسلایدهای «معرفی تعاملی» سایت. هر تغییری اینجا بلافاصله در صفحه معرفی تعاملی دیده می‌شود. فایل پاورپوینت قابل دانلود جداست؛ نسخه جدیدش را از بخش «ویدیو و فایل» با تیک «جایگزین پاورپوینت» بارگذاری کنید. <a href="<?= h(url_present()) ?>" target="_blank">مشاهده ارائه ↗</a></p>
+<?php elseif ($which === 'engine'): ?>
   <p>موتور توضیحات، متن معرفی را از کنار هم گذاشتن جمله‌های هر صنف با قالب‌های هر لحن می‌سازد. در بخش <code>roles</code> جمله‌های هر صنف و در بخش <code>tones</code> قالب‌های هر لحن را عوض یا اضافه کنید. در قالب‌ها از <code>{pain}</code>، <code>{agitate}</code>، <code>{after}</code>، <code>{feature}</code>، <code>{benefit}</code>، <code>{mechanism}</code>، <code>{role}</code>، <code>{roles}</code>، <code>{brand}</code> و <code>{offer}</code> استفاده کنید.</p>
 <?php else: ?>
   <p>ویرایش مستقیم همه محتوای صفحه اصلی. برای افزودن یا حذف بخش، صنف یا ستون از اینجا استفاده کنید. قبل از هر ذخیره، یک نسخه پشتیبان خودکار در <code>data/backup-content.json</code> ساخته می‌شود.</p>

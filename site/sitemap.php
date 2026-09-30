@@ -11,5 +11,7 @@ $u = function (string $loc, string $mod, string $freq, string $pri, string $img 
 };
 $u(abs_url(), $latest, 'weekly', '1.0', abs_url(c('seo.og_image')));
 $u(abs_url('blog/'), $latest, 'weekly', '0.8');
+$u(abs_url('present.php'), $latest, 'monthly', '0.7');
+foreach (array_keys((array)c('roles.items')) as $k) $u(abs_url('for/' . $k), $latest, 'monthly', '0.9');
 foreach (articles() as $a) $u(canonical_article($a['slug']), $a['updated'] ?? $a['date'], 'monthly', '0.7', abs_url($a['image'] ?? c('seo.og_image')));
 echo '</urlset>', "\n";

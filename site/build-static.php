@@ -8,4 +8,6 @@ require_once __DIR__ . '/lib.php';
 file_put_contents("$out/index.html", render(__DIR__ . '/index.php'));
 file_put_contents("$out/blog.html", render(__DIR__ . '/blog/index.php'));
 foreach (articles() as $a) file_put_contents("$out/blog-{$a['slug']}.html", render(__DIR__ . '/blog/article.php', ['slug' => $a['slug']]));
-echo "built ", 2 + count(articles()), " pages into $out\n";
+file_put_contents("$out/present.html", render(__DIR__ . '/present.php'));
+foreach (array_keys((array)c('roles.items')) as $k) { $GLOBALS['SEGMENT'] = $k; file_put_contents("$out/for-$k.html", render(__DIR__ . '/for.php')); }
+echo "built ", 3 + count(articles()) + count((array)c('roles.items')), " pages into $out\n";

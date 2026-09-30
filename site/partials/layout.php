@@ -72,6 +72,7 @@ function page_start(array $m): void {
 <?php foreach ((array)c('nav.items') as $it): ?>
       <li><a href="<?= h(nav_href($it[0])) ?>"><?= h($it[1]) ?></a></li>
 <?php endforeach; ?>
+      <li><a href="<?= h(url_present()) ?>">معرفی تعاملی</a></li>
       <li><a href="<?= h(c('contact.panel_url')) ?>" target="_blank" rel="noopener"><?= t('nav.panel_label') ?></a></li>
     </ul>
     <div class="nav-side">
@@ -113,7 +114,7 @@ function page_end(bool $withEngine = false): void {
     $data = [
         'base' => $b, 'whatsapp' => c('contact.whatsapp'), 'social' => c('social'),
         'roles' => c('roles.items'), 'labels' => c('labels'), 'rotator' => c('hero.rotator'),
-        'leadTitle' => c('offer.lead_title'), 'leadUrl' => is_static() ? '' : BASE_PATH . 'lead.php',
+        'leadTitle' => c('offer.lead_title'), 'conversion' => is_static() ? '' : (string)c('seo.conversion_js'), 'leadUrl' => is_static() ? '' : BASE_PATH . 'lead.php',
     ];
     if ($withEngine) { $e = load_json('engine'); $e['offer'] = $e['offer'] ?? c('offer.badge'); $data['engine'] = $e; }
     ?>
@@ -133,6 +134,8 @@ function page_end(bool $withEngine = false): void {
       <a href="<?= h(url_home('#pillars')) ?>">امکانات فَروَم</a>
       <a href="<?= h(url_home('#pitch')) ?>">فَروَم به زبان شما</a>
       <a href="<?= h(url_blog()) ?>">مقالات</a>
+      <a href="<?= h(url_present()) ?>">معرفی تعاملی فَروَم</a>
+      <a href="<?= h(base() . 'files/farvam-presentation.pptx') ?>" download>دانلود پاورپوینت معرفی</a>
       <a href="<?= h(url_home('#demo')) ?>"><?= t('offer.cta') ?></a>
     </div>
     <div class="foot-col">
@@ -140,6 +143,15 @@ function page_end(bool $withEngine = false): void {
       <a href="<?= h(tel()) ?>" dir="ltr" class="num"><?= t('contact.phone_display') ?></a>
       <span><?= t('contact.address') ?></span>
       <a href="<?= h(c('contact.panel_url')) ?>" target="_blank" rel="noopener" dir="ltr"><?= t('contact.site_label') ?></a>
+<?php if (c('follow.site_url')): ?>      <a href="<?= h(c('follow.site_url')) ?>" target="_blank" rel="noopener" dir="ltr"><?= t('follow.site_label') ?></a>
+<?php endif; ?>
+    </div>
+    <div class="foot-col">
+      <b>برای صنف شما</b>
+<?php foreach ((array)c('roles.items') as $rk => $rr): ?>      <a href="<?= h(url_segment($rk)) ?>"><?= h($rr['tab'] ?? $rk) ?></a>
+<?php endforeach; ?>
+<?php if (c('trust.enamad_html')): ?>      <div class="enamad"><?= c('trust.enamad_html') ?></div>
+<?php endif; ?>
     </div>
   </div>
 </footer>

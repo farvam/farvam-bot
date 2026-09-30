@@ -113,3 +113,25 @@ function org_ld(): array {
         ])),
     ];
 }
+
+/* ---------- v5: extra urls & media ---------- */
+function url_present(): string { return is_static() ? 'present.html' : BASE_PATH . 'present.php'; }
+function url_segment(string $k): string {
+    if (is_static()) return 'for-' . $k . '.html';
+    return PRETTY_URLS ? BASE_PATH . 'for/' . rawurlencode($k) : BASE_PATH . 'for.php?role=' . rawurlencode($k);
+}
+function file_url(string $path): string { return preg_match('#^https?://#', $path) ? $path : base() . ltrim($path, '/'); }
+/* Aparat / YouTube / direct video file -> embeddable HTML (lazy) */
+function video_embed(string $url, string $title = ''): string {
+    $url = trim($url); if ($url === '') return '';
+    if (preg_match('#aparat\.com/(?:v|video/video/embed/videohash)/([A-Za-z0-9]+)#', $url, $m))
+        return '<iframe src="https://www.aparat.com/video/video/embed/videohash/' . h($m[1]) . '/vt/frame" title="' . h($title) . '" allowfullscreen loading="lazy"></iframe>';
+    if (preg_match('#(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/|youtube\.com/shorts/)([A-Za-z0-9_\-]{6,})#', $url, $m))
+        return '<iframe src="https://www.youtube-nocookie.com/embed/' . h($m[1]) . '" title="' . h($title) . '" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>';
+    if (preg_match('#\.(mp4|webm|m4v)(\?.*)?$#i', $url))
+        return '<video src="' . h(file_url($url)) . '" controls preload="none" playsinline></video>';
+    return '';
+}
+function videos_for(?string $role = null): array {
+    return array_values(array_filter((array)c('videos.items'), fn($v) => trim($v['url'] ?? '') !== '' && ($role === null || ($v['role'] ?? '') === $role || ($role === '' && ($v['role'] ?? '') === ''))));
+}

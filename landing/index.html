@@ -8,6 +8,7 @@
 <meta property="og:url" content="https://farvamcertification.ir">
 <meta property="og:title" content="فَروَم | از ثبت اولین سوت تا بستن تراز سالانه">
 <meta property="og:description" content="در بازار طلا، هر خطا با وزن طلا تسویه می‌شود. فَروَم گاوصندوق، معاملات، پرسنل و حسابداری شما را در یک زنجیره به هم وصل می‌کند.">
+<link rel="icon" href="images/logo-mark-gold.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Vazirmatn:wght@400;500;700;800&display=swap">
@@ -55,7 +56,7 @@ p{margin:0}
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(6,9,16,.6);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--edge)}
 .nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-size:1.5rem;font-weight:700}
-.brand svg{filter:drop-shadow(0 0 6px rgba(255,200,74,.7))}
+.brand-mark{height:34px;width:auto;filter:drop-shadow(0 0 6px rgba(255,200,74,.55))}
 .nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:.95rem}
 .nav ul a{text-decoration:none;color:var(--muted)}
 .nav ul a:hover{color:var(--text)}
@@ -100,6 +101,7 @@ p{margin:0}
 
 /* hero floating voucher */
 .hero-visual{position:relative}
+.hero-logo{display:block;height:86px;width:auto;margin-bottom:20px;filter:drop-shadow(0 0 18px rgba(255,200,74,.45))}
 .voucher{position:absolute;inset-inline-start:-18px;bottom:-28px;width:min(250px,62%);padding:16px;font-size:.84rem;border-color:rgba(46,242,208,.5);box-shadow:0 0 24px -8px var(--teal),0 20px 40px -20px rgba(0,0,0,.9)}
 .voucher .lcd{direction:ltr;text-align:left;font-weight:800;font-size:1.6rem;color:var(--teal);text-shadow:0 0 12px rgba(46,242,208,.6);line-height:1.2}
 .voucher .lcd small{font-size:.75rem;color:var(--muted);font-weight:500}
@@ -229,7 +231,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 <header class="nav">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="فَروَم">
-      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 29 16 16 30 3 16Z" fill="none" stroke="#FFC84A" stroke-width="2"/><path d="M16 8 23 16 16 24 9 16Z" fill="#FFC84A"/></svg>
+      <img src="images/logo-mark-gold.png" alt="" width="50" height="32" class="brand-mark">
       فَروَم
     </a>
     <ul>
@@ -251,6 +253,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 <section class="hero" style="padding-block:0">
   <div class="wrap">
     <div>
+      <img class="hero-logo rise" src="images/logo-gold.png" alt="لوگوی فَروَم" width="113" height="86">
       <span class="eyebrow rise">◆ اکوسیستم مدیریت، عملیات و معاملات طلا و جواهر</span>
       <h1 class="rise d2">در بازار طلا، هر خطا<br>با <em>وزن طلا</em> تسویه می‌شود.</h1>
       <p class="lead rise d3">فَروَم گاوصندوق، ترازو، معاملات، پرسنل و حسابداری وزنی و ریالی شما را در <b>یک زنجیره پیوسته</b> به هم وصل می‌کند؛ از ثبت اولین سوت تا بستن تراز سالانه.</p>
@@ -521,7 +524,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 </section>
 </main>
 
-<footer><div class="wrap"><span>فَروَم · اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر</span><span>اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم · <a href="tel:+989138143073" dir="ltr" style="text-decoration:none">۰۹۱۳ ۸۱۴ ۳۰۷۳</a></span></div></footer>
+<footer><div class="wrap"><span style="display:flex;align-items:center;gap:12px"><img src="images/logo-gold.png" alt="لوگوی فَروَم" width="64" height="48" style="height:48px;width:auto">فَروَم · اکوسیستم هوشمند مدیریت، عملیات و معاملات طلا و جواهر</span><span style="align-self:center">اصفهان، بازار حکیم، پاساژ حکیم، طبقه دوم · <a href="tel:+989138143073" dir="ltr" style="text-decoration:none">۰۹۱۳ ۸۱۴ ۳۰۷۳</a></span></div></footer>
 
 <script>
 /* تصاویر پنل‌ها: فایل را با همین نام در پوشه images بگذارید (مثلاً images/acc-dashboard.webp). تا وقتی فایل نباشد، جای خالی نمایش داده می‌شود. */

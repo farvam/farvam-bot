@@ -1,0 +1,115 @@
+<?php
+require_once __DIR__ . '/config.php';
+
+/* ---------- data ---------- */
+function load_json(string $name, $default = []) {
+    $f = DATA_DIR . '/' . $name . '.json';
+    if (!is_file($f)) return $default;
+    $d = json_decode((string)file_get_contents($f), true);
+    return is_array($d) ? $d : $default;
+}
+function save_json(string $name, $data): bool {
+    $f = DATA_DIR . '/' . $name . '.json';
+    $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    if ($json === false) return false;
+    if (is_file($f)) @copy($f, DATA_DIR . '/backup-' . $name . '.json');
+    $tmp = $f . '.tmp';
+    if (file_put_contents($tmp, $json, LOCK_EX) === false) return false;
+    return rename($tmp, $f);
+}
+function content(): array { static $c = null; if ($c === null) $c = load_json('content'); return $c; }
+function articles(bool $onlyPublished = true): array {
+    $all = load_json('articles');
+    if ($onlyPublished) $all = array_values(array_filter($all, fn($a) => !empty($a['published'])));
+    usort($all, fn($a, $b) => strcmp($b['date'] ?? '', $a['date'] ?? ''));
+    return $all;
+}
+function article_by_slug(string $slug): ?array {
+    foreach (articles() as $a) if (($a['slug'] ?? '') === $slug) return $a;
+    return null;
+}
+
+/* ---------- output helpers ---------- */
+function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function c(string $path, $default = '') {
+    $v = content();
+    foreach (explode('.', $path) as $k) { if (!is_array($v) || !array_key_exists($k, $v)) return $default; $v = $v[$k]; }
+    return $v;
+}
+/* escaped text */
+function t(string $path): string { return h(c($path)); }
+/* limited HTML for *_html fields (admin-authored) */
+function x(string $path): string { return safe_html((string)c($path)); }
+function safe_html(string $s): string {
+    $s = strip_tags($s, '<b><strong><em><i><br><a><span><small><u><mark><ul><ol><li><p><h2><h3><h4><table><thead><tbody><tr><th><td><blockquote><code><figure><figcaption><img><hr>');
+    $s = preg_replace('/\son\w+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $s);
+    $s = preg_replace('/(href|src)\s*=\s*(["\'])\s*javascript:[^"\']*\2/i', '$1="#"', $s);
+    return $s;
+}
+
+/* ---------- urls ---------- */
+function is_static(): bool { return defined('STATIC_BUILD') && STATIC_BUILD; }
+function base(): string { return is_static() ? '' : BASE_PATH; }
+function url_home(string $hash = ''): string { return (is_static() ? 'index.html' : BASE_PATH) . $hash; }
+function url_blog(): string { return is_static() ? 'blog.html' : (PRETTY_URLS ? BASE_PATH . 'blog/' : BASE_PATH . 'blog/index.php'); }
+function url_article(string $slug): string {
+    if (is_static()) return 'blog-' . $slug . '.html';
+    return PRETTY_URLS ? BASE_PATH . 'blog/' . rawurlencode($slug) : BASE_PATH . 'blog/article.php?slug=' . rawurlencode($slug);
+}
+function abs_url(string $path = ''): string { return rtrim(SITE_URL, '/') . '/' . ltrim($path, '/'); }
+function canonical_article(string $slug): string { return abs_url('blog/' . rawurlencode($slug)); }
+function tel(): string { return 'tel:' . c('contact.phone_tel'); }
+function wa(string $msg = ''): string { return 'https://wa.me/' . c('contact.whatsapp') . ($msg !== '' ? '?text=' . rawurlencode($msg) : ''); }
+/* nav item: '#x' anchors go to home, 'blog' goes to blog */
+function nav_href(string $k): string {
+    if ($k === 'blog') return url_blog();
+    if ($k !== '' && $k[0] === '#') return url_home($k);
+    return $k;
+}
+/* {{a:slug}} inside article bodies becomes a link to that article */
+function expand_links(string $html): string {
+    return preg_replace_callback('/\{\{a:([a-z0-9\-]+)\}\}/', fn($m) => h(url_article($m[1])), $html);
+}
+
+/* ---------- text utilities ---------- */
+function fa_digits($s): string { return strtr((string)$s, ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']); }
+function reading_minutes(string $html): int { $w = count(preg_split('/\s+/u', trim(strip_tags($html)))); return max(1, (int)round($w / 200)); }
+function jalali_label(string $iso): string {
+    // Gregorian → Jalali (for display only)
+    [$gy, $gm, $gd] = array_map('intval', explode('-', substr($iso, 0, 10)));
+    $g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    $gy2 = ($gm > 2) ? ($gy + 1) : $gy;
+    $days = 355666 + (365 * $gy) + intdiv($gy2 + 3, 4) - intdiv($gy2 + 99, 100) + intdiv($gy2 + 399, 400) + $gd + $g_d_m[$gm - 1];
+    $jy = -1595 + (33 * intdiv($days, 12053)); $days %= 12053;
+    $jy += 4 * intdiv($days, 1461); $days %= 1461;
+    if ($days > 365) { $jy += intdiv($days - 1, 365); $days = ($days - 1) % 365; }
+    $jm = ($days < 186) ? 1 + intdiv($days, 31) : 7 + intdiv($days - 186, 30);
+    $jd = 1 + (($days < 186) ? ($days % 31) : (($days - 186) % 30));
+    $months = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+    return fa_digits($jd) . ' ' . $months[$jm - 1] . ' ' . fa_digits($jy);
+}
+/* add ids to h2/h3 for a table of contents */
+function toc_and_body(string $html): array {
+    $toc = []; $i = 0;
+    $body = preg_replace_callback('/<h2>(.*?)<\/h2>/u', function ($m) use (&$toc, &$i) {
+        $i++; $id = 's' . $i; $toc[] = ['id' => $id, 't' => strip_tags($m[1])];
+        return '<h2 id="' . $id . '">' . $m[1] . '</h2>';
+    }, $html);
+    return [$toc, $body];
+}
+function json_ld($data): string {
+    return '<script type="application/ld+json">' . json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '</script>';
+}
+function org_ld(): array {
+    return [
+        '@type' => ['Organization', 'LocalBusiness'], '@id' => abs_url('#org'),
+        'name' => c('seo.site_name'), 'alternateName' => 'Farvam', 'url' => abs_url(),
+        'logo' => abs_url('images/logo-gold.png'), 'image' => abs_url(c('seo.og_image')),
+        'telephone' => c('contact.phone_tel'),
+        'address' => ['@type' => 'PostalAddress', 'streetAddress' => c('contact.address'), 'addressLocality' => c('contact.city'), 'addressCountry' => 'IR'],
+        'sameAs' => array_values(array_filter([
+            c('social.instagram') ? 'https://instagram.com/' . c('social.instagram') : '',
+            c('social.telegram') ? 'https://t.me/' . c('social.telegram') : '',
+        ])),
+    ];
+}

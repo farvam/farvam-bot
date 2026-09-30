@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /farvam/admin/
+Disallow: /farvam/data/
+
+Sitemap: https://farvamcertification.ir/farvam/sitemap.xml

@@ -1,0 +1,6 @@
+data/backup-*.json
+data/login-attempts.json
+data/admin.json
+data/*.tmp
+data/leads.json
+data/lead-rate.json

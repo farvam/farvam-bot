@@ -132,13 +132,13 @@ p{margin:0}
 
 /* hero floating voucher */
 .hero-visual{position:relative}
-.voucher{position:absolute;inset-inline-start:-18px;bottom:-30px;width:min(250px,62%);padding:16px;font-size:.84rem;border-color:var(--teal-line);box-shadow:0 0 26px -8px var(--teal-glow),var(--shadow)}
+.voucher{position:absolute;inset-inline-start:22px;bottom:22px;width:min(240px,46%);z-index:2;padding:16px;font-size:.84rem;border-color:var(--teal-line);box-shadow:0 0 26px -8px var(--teal-glow),var(--shadow)}
 .voucher .lcd{direction:ltr;text-align:left;font-weight:800;font-size:1.6rem;color:var(--teal);line-height:1.2}
 .voucher .lcd small{font-size:.75rem;color:var(--muted);font-weight:500}
 .voucher ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px}
 .voucher li{display:flex;justify-content:space-between;gap:8px}
 .voucher .ok{color:var(--ok)} .voucher .wait{color:var(--gold)}
-@media (max-width:560px){.voucher{position:static;width:100%;margin-top:14px}}
+@media (max-width:760px){.voucher{position:static;width:100%;margin-top:14px}}
 
 /* sections */
 section{padding-block:88px;position:relative}
@@ -273,7 +273,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-ite
 .tilt{transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s ease;will-change:transform}
 .tilt.live{transition:transform .08s linear}
 .hero .shot.tilt{transform:rotateY(-10deg) rotateX(5deg)}
-.voucher{transform:translateZ(60px)}
+.voucher{transform:none}
 .shot.tilt::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(420px circle at var(--mx,70%) var(--my,20%),rgba(255,255,255,.22),transparent 45%);mix-blend-mode:soft-light}
 
 /* embossed 3D coin logo */
@@ -620,3 +620,10 @@ main>section:not(.hero):not(#offer){content-visibility:auto;contain-intrinsic-si
 .ba-arrow{color:var(--gold);font-size:1.4rem;font-weight:800}
 @media (max-width:640px){.ba-row{grid-template-columns:1fr}.ba-arrow{transform:rotate(-90deg);justify-self:center}}
 .seg-list{margin-top:26px}
+/* voucher card: solid surface so it reads over the screenshot */
+.voucher{background:linear-gradient(160deg,#152038,#0B1222)!important;color:#EEF2F8}
+.voucher li span:first-child{color:#EEF2F8}
+.voucher .lcd small{color:#A3AEC2}
+:root:not([data-theme="dark"]) .voucher{background:linear-gradient(160deg,#FFFFFF,#F2F5FA)!important;color:#0E1424}
+:root:not([data-theme="dark"]) .voucher li span:first-child{color:#0E1424}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .voucher{background:linear-gradient(160deg,#152038,#0B1222)!important;color:#EEF2F8}:root:not([data-theme="light"]) .voucher li span:first-child{color:#EEF2F8}}

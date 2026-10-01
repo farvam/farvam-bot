@@ -97,6 +97,16 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'delete_article':
             $all = array_values(array_filter(load_json('articles'), fn($a) => $a['slug'] !== ($_POST['slug'] ?? '')));
             flash(save_json('articles', $all) ? 'مقاله حذف شد.' : 'حذف نشد.'); go('tab=articles');
+        case 'placements':
+            $data = ['content' => load_json('content'), 'presentation' => load_json('presentation')];
+            $valid = image_choices(); $valid[] = '';
+            foreach (placements() as $n => [$lab, $file, $path]) {
+                if (!isset($_POST['pl'][$n])) continue;
+                $v = (string)$_POST['pl'][$n];
+                if (in_array($v, $valid, true)) jset($data[$file], $path, $v);
+            }
+            $ok = save_json('content', $data['content']) && save_json('presentation', $data['presentation']);
+            flash($ok ? 'جای تصاویر ذخیره شد.' : 'ذخیره نشد.'); go('tab=placements');
         case 'upload':
             $slot = preg_replace('/[^a-z0-9\-]/', '', (string)($_POST['slot'] ?? ''));
             $f = $_FILES['file'] ?? null;
@@ -106,6 +116,7 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $types = [IMAGETYPE_JPEG => 'imagecreatefromjpeg', IMAGETYPE_PNG => 'imagecreatefrompng', IMAGETYPE_WEBP => 'imagecreatefromwebp'];
             if (!$info || !isset($types[$info[2]])) { flash('فقط تصویر JPG، PNG یا WEBP.'); go('tab=images'); }
             $dest = dirname(__DIR__) . '/images/' . $slot . '.webp';
+            if (!empty($_POST['label'])) { $cc = load_json('content'); $cc['labels'][$slot] = trim(strip_tags((string)$_POST['label'])); save_json('content', $cc); }
             if ($info[2] === IMAGETYPE_WEBP) { $ok = move_uploaded_file($f['tmp_name'], $dest); }
             elseif (function_exists('imagewebp')) { $im = $types[$info[2]]($f['tmp_name']); imagepalettetotruecolor($im); imagealphablending($im, true); imagesavealpha($im, true); $ok = imagewebp($im, $dest, 86); imagedestroy($im); }
             else { flash('هاست شما تبدیل به WEBP را پشتیبانی نمی‌کند؛ لطفاً تصویر را با فرمت WEBP بارگذاری کنید.'); go('tab=images'); }
@@ -181,6 +192,27 @@ function field($name, $path, $key, $val) {
     echo '</label>';
 }
 $slots = array_keys(load_json('content')['labels'] ?? []);
+/* every place on the site that shows a screenshot: [label, file, path-in-json] */
+function placements(): array {
+    $c = load_json('content'); $pr = load_json('presentation'); $out = [];
+    $out[] = ['صفحه اصلی › تصویر بالای صفحه', 'content', ['hero', 'img']];
+    foreach ($c['pillars']['items'] ?? [] as $i => $p) $out[] = ['صفحه اصلی › ستون «' . $p['title'] . '»', 'content', ['pillars', 'items', $i, 'img']];
+    $tn = $c['panels']['tabs'] ?? [];
+    foreach ($c['gallery'] ?? [] as $g => $items) foreach ($items as $i => $it) $out[] = ['گالری › ' . ($tn[$g] ?? $g) . ' › تصویر ' . fa_digits($i + 1) . ' (' . mb_substr($it[2], 0, 40) . '…)', 'content', ['gallery', $g, $i, 0]];
+    foreach ($c['roles']['items'] ?? [] as $k => $r) $out[] = ['صنف «' . ($r['tab'] ?? $k) . '» (تب صفحه اصلی و صفحه صنف)', 'content', ['roles', 'items', $k, 'img']];
+    foreach ($pr['slides'] ?? [] as $i => $sl) {
+        if (array_key_exists('image', $sl)) $out[] = ['ارائه معرفی › اسلاید ' . fa_digits($i + 1) . ' «' . ($sl['title'] ?? '') . '»', 'presentation', ['slides', $i, 'image']];
+        if (($sl['kind'] ?? '') === 'panels') foreach ($sl['items'] as $j => $it) $out[] = ['ارائه معرفی › اسلاید ' . fa_digits($i + 1) . ' › ' . $it[0], 'presentation', ['slides', $i, 'items', $j, 1]];
+    }
+    return $out;
+}
+function jget(array $d, array $path) { foreach ($path as $k) { if (!is_array($d) || !array_key_exists($k, $d)) return null; $d = $d[$k]; } return $d; }
+function jset(array &$d, array $path, $v): void { $ref = &$d; foreach ($path as $k) $ref = &$ref[$k]; $ref = $v; }
+function image_choices(): array {
+    $o = [];
+    foreach (glob(dirname(__DIR__) . '/images/*.webp') ?: [] as $f) { $n = basename($f, '.webp'); if (strpos($n, 'logo-') !== 0) $o[] = $n; }
+    sort($o); return $o;
+}
 ?><!doctype html>
 <html lang="fa" dir="rtl">
 <head>
@@ -220,6 +252,10 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 .slot{border:1px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:8px}.slot img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;background:var(--bg)}
 .muted{color:var(--muted);font-size:.9rem}code{direction:ltr;unicode-bidi:embed}
 .login{max-width:380px;margin:12vh auto}
+.pl-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.pl{display:grid;gap:10px;align-content:start;margin:0}
+.pl img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:top;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.pl img[src=""]{visibility:hidden}
 </style>
 </head>
 <body>
@@ -236,7 +272,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 <header>
   <b>پنل مدیریت فَروَم</b>
   <nav>
-    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'media' => 'ویدیو و فایل', 'present' => 'ارائه معرفی', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
+    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'placements' => 'جای تصاویر', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'media' => 'ویدیو و فایل', 'present' => 'ارائه معرفی', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
     <a href="?tab=<?= $k ?>" class="<?= $tab === $k ? 'on' : '' ?>"><?= $v ?></a>
     <?php endforeach; ?>
     <a href="<?= h(url_home()) ?>" target="_blank">مشاهده سایت ↗</a>
@@ -315,7 +351,36 @@ function renum(fs){var path=fs.dataset.path.split('.'),base='f['+path.join('][')
 </div>
 <?php endif; ?>
 
+<?php elseif ($tab === 'placements'): $ch = image_choices(); $cdat = load_json('content'); $pdat = load_json('presentation'); ?>
+<p class="muted">برای هر جای سایت، تصویری که باید آنجا نمایش داده شود را انتخاب کنید و «ذخیره» را بزنید. پیش‌نمایش کنار هر مورد همان لحظه عوض می‌شود. برای اضافه کردن تصویر تازه، اول در بخش «تصاویر» بارگذاری‌اش کنید.</p>
+<form method="post"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="placements">
+<div class="pl-list">
+<?php foreach (placements() as $n => [$lab, $file, $path]): $cur = (string)jget($file === 'content' ? $cdat : $pdat, $path); ?>
+  <div class="pl card">
+    <img src="<?= $cur !== '' && is_file(dirname(__DIR__) . "/images/$cur.webp") ? h(base() . "images/$cur.webp") : '' ?>" alt="" data-base="<?= h(base()) ?>">
+    <label class="fld"><span><?= h($lab) ?></span>
+      <select name="pl[<?= $n ?>]" onchange="var i=this.closest('.pl').querySelector('img');i.src=this.value?i.dataset.base+'images/'+this.value+'.webp':''">
+        <option value=""<?= $cur === '' ? ' selected' : '' ?>>— بدون تصویر —</option>
+<?php foreach ($ch as $o): ?>        <option value="<?= h($o) ?>"<?= $o === $cur ? ' selected' : '' ?>><?= h(c("labels.$o", $o)) ?> (<?= h($o) ?>)</option>
+<?php endforeach; ?>
+      </select></label>
+  </div>
+<?php endforeach; ?>
+</div>
+<div class="bar"><button class="btn btn-gold">ذخیره جای تصاویر</button><a class="btn btn-ghost" href="<?= h(url_home('#panels')) ?>" target="_blank">مشاهده سایت ↗</a></div>
+</form>
+
 <?php elseif ($tab === 'images'): ?>
+<form class="card" method="post" enctype="multipart/form-data" style="max-width:640px"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="upload">
+  <h3 style="margin-top:0">بارگذاری تصویر تازه</h3>
+  <div class="grid2">
+    <label class="fld"><span>نام فایل (انگلیسی، مثل trade-room)</span><input name="slot" required pattern="[a-z0-9\-]+" dir="ltr"></label>
+    <label class="fld"><span>عنوان فارسی تصویر</span><input name="label" required></label>
+  </div>
+  <label class="fld"><span>تصویر (JPG، PNG یا WEBP تا ۵ مگابایت)</span><input type="file" name="file" accept="image/png,image/jpeg,image/webp" required></label>
+  <button class="btn btn-gold">بارگذاری</button> <span class="muted">بعد از بارگذاری، در «جای تصاویر» آن را برای هر جای سایت انتخاب کنید.</span>
+</form>
+<h3>جایگزینی تصاویر موجود</h3>
 <p class="muted">برای هر جای تصویر، عکس جدید (JPG، PNG یا WEBP تا ۵ مگابایت) بارگذاری کنید. جایی که تصویر ندارد در سایت پنهان می‌ماند. قبل از بارگذاری، اسم و شماره مشتری‌ها را محو کنید.</p>
 <div class="slots">
 <?php foreach ($slots as $s): $p = dirname(__DIR__) . "/images/$s.webp"; ?>

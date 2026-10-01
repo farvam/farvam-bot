@@ -50,7 +50,7 @@ $b = base();
       <ul class="chips"><?php foreach ((array)c('hero.chips') as $ch): ?><li><?= h($ch) ?></li><?php endforeach; ?></ul>
     </div>
     <div class="hero-visual stage rise d3">
-      <figure class="shot tilt empty" data-img="acc-accounts" data-label="<?= t('labels.acc-accounts') ?>">
+      <?php $heroImg = c('hero.img', 'acc-accounts'); ?><figure class="shot tilt empty" data-img="<?= h($heroImg) ?>" data-label="<?= h(c('labels.' . $heroImg, $heroImg)) ?>">
         <div class="bar"><i></i><i></i><i></i></div>
         <img alt="<?= t('hero.shot_alt') ?>" fetchpriority="high">
         <div class="ph"></div>

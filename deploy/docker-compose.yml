@@ -1,0 +1,25 @@
+name: farvam-site
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: farvam-site:latest
+    container_name: farvam-site
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8430:80"
+    volumes:
+      # owner's edits survive updates (first start copies the shipped files in)
+      - farvam_data:/var/www/html/farvam/data
+      - farvam_images:/var/www/html/farvam/images
+      - farvam_files:/var/www/html/farvam/files
+      - farvam_fonts:/var/www/html/farvam/assets/fonts
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+volumes:
+  farvam_data:
+  farvam_images:
+  farvam_files:
+  farvam_fonts:

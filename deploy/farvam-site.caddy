@@ -1,0 +1,6 @@
+# Farvam marketing site (container farvam-site on 127.0.0.1:8430)
+redir /farvam /farvam/ 308
+handle /farvam/* {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8430
+}

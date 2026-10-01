@@ -109,6 +109,26 @@ farvam/
 8. Submit `https://farvamcertification.ir/farvam/sitemap.xml` in Google Search Console
    (paste the verification code in admin → «سئو و متا» → «کد تأیید Google Search Console»).
 
+### Docker + Caddy (the owner's actual server: Ubuntu 24.04, Docker, Caddy on 80/443)
+
+Everything is in `deploy/`. The site runs in its own container `farvam-site`
+(php:8.3-apache) bound to `127.0.0.1:8430`, separate from the existing product container
+`farvam` (`127.0.0.1:8420`), which must not be touched.
+
+- Package on the owner's PC: `farvam-deploy.zip` + `deploy-farvam.ps1` + `deploy-farvam.bat`
+  in one folder → double-click the `.bat` → it uploads the zip with `scp` and runs
+  `server-install.sh` over `ssh` (password prompted by Windows OpenSSH; never sent to Claude).
+- `server-install.sh` (idempotent): `docker compose up -d --build` in `/opt/farvam-site`,
+  waits for HTTP 200, copies `farvam-site.caddy` to `/etc/caddy/`, inserts
+  `import /etc/caddy/farvam-site.caddy` as the first line of the `farvamcertification.ir`
+  site block (backup `Caddyfile.bak-farvam-*`, `caddy validate`, auto-restore on failure),
+  reloads Caddy, then smoke-tests the public URLs.
+- Owner data lives in named volumes (`farvam_data`, `farvam_images`, `farvam_files`,
+  `farvam_fonts`), so rebuilding/updating the image keeps leads, edits and uploads.
+  Never run `docker compose down -v` on the server.
+- Update: run the `.bat` again with a new zip. Logs: `docker logs -f farvam-site`.
+  Remove the route: delete the `import` line from the Caddyfile and `systemctl reload caddy`.
+
 ### Nginx (only if not Apache/LiteSpeed)
 ```nginx
 location ^~ /farvam/data/      { deny all; }

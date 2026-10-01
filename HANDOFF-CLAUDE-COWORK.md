@@ -111,23 +111,36 @@ farvam/
 
 ### Docker + Caddy (the owner's actual server: Ubuntu 24.04, Docker, Caddy on 80/443)
 
-Everything is in `deploy/`. The site runs in its own container `farvam-site`
-(php:8.3-apache) bound to `127.0.0.1:8430`, separate from the existing product container
-`farvam` (`127.0.0.1:8420`), which must not be touched.
+Everything is in `deploy/`. The site runs in its own container **`panel-market`**
+(php:8.3-apache + SQLite) bound to `127.0.0.1:8430`, in `/opt/panel-market`, with its own
+network `panel-market-net`. It is fully separate from the owner's product container
+**`farvam`** (`127.0.0.1:8420`), which must never be touched.
 
-- Package on the owner's PC: `farvam-deploy.zip` + `deploy-farvam.ps1` + `deploy-farvam.bat`
-  in one folder → double-click the `.bat` → it uploads the zip with `scp` and runs
+- **Storage.** With env `FARVAM_DB` set (the image does this), `lib.php` stores every dataset
+  (content, articles, presentation, engine, leads, admin password hash, rate limits) in SQLite
+  (`/var/lib/panel-market/panel-market.sqlite`, volume `panel-market-db`). The last 30 versions
+  of content/articles/presentation/engine are kept and can be restored in admin → «ویرایش پیشرفته».
+  Shipped `data/*.json` are defaults until the first save. Without `FARVAM_DB` (shared hosting)
+  the JSON files are used as before.
+- **Media** in volumes `panel-market-images`, `panel-market-files`, `panel-market-fonts`.
+  The entrypoint adds shipped files that are missing (cp -n) and never overwrites uploads.
+- **Package on the owner's PC:** `panel-market-deploy.zip` + `deploy-panel-market.ps1` +
+  `deploy-panel-market.bat` in one folder → double-click the `.bat` → `scp` upload, then
   `server-install.sh` over `ssh` (password prompted by Windows OpenSSH; never sent to Claude).
-- `server-install.sh` (idempotent): `docker compose up -d --build` in `/opt/farvam-site`,
-  waits for HTTP 200, copies `farvam-site.caddy` to `/etc/caddy/`, inserts
-  `import /etc/caddy/farvam-site.caddy` as the first line of the `farvamcertification.ir`
-  site block (backup `Caddyfile.bak-farvam-*`, `caddy validate`, auto-restore on failure),
-  reloads Caddy, then smoke-tests the public URLs.
-- Owner data lives in named volumes (`farvam_data`, `farvam_images`, `farvam_files`,
-  `farvam_fonts`), so rebuilding/updating the image keeps leads, edits and uploads.
-  Never run `docker compose down -v` on the server.
-- Update: run the `.bat` again with a new zip. Logs: `docker logs -f farvam-site`.
-  Remove the route: delete the `import` line from the Caddyfile and `systemctl reload caddy`.
+- **`server-install.sh`** (idempotent):
+  1. Back up the current state.
+  2. Build.
+  3. One-time migration from the first installer's `farvam-site` container: JSON is imported
+     into SQLite and media volumes are copied; the old volumes are kept.
+  4. `docker compose up -d` and check that the DB is OK.
+  5. Insert `import /etc/caddy/panel-market.caddy` into the `farvamcertification.ir` site block
+     (with a backup, `caddy validate`, and auto-restore on failure), then reload Caddy.
+  6. Install a daily backup cron at 03:30 and smoke-test the URLs.
+- **Backups:** `bash /opt/panel-market/backup.sh` → `/opt/panel-market/backups/*.tar.gz`
+  (DB snapshot via `VACUUM INTO` + media, newest 7 kept). Restore:
+  `bash /opt/panel-market/restore.sh <file>`. Never run `docker compose down -v`.
+- Logs: `docker logs -f panel-market`. Remove the route: delete the `import` line from the
+  Caddyfile and `systemctl reload caddy`.
 
 ### Nginx (only if not Apache/LiteSpeed)
 ```nginx

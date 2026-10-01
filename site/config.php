@@ -13,4 +13,6 @@ define('BASE_PATH', '/farvam/');
 define('PRETTY_URLS', true);
 define('ADMIN_PASSWORD_HASH', '$2y$12$Px3vg6GmuDpe1QcXQecyC.JrTZyByhp3Vx52BMhIHFbYm.FNz1yZ6');
 define('DATA_DIR', __DIR__ . '/data');
+// SQLite database file (set by Docker). Empty = store data as JSON files in data/ (shared hosting).
+define('DB_FILE', (string)getenv('FARVAM_DB'));
 date_default_timezone_set('Asia/Tehran');

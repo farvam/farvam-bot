@@ -1,21 +1,82 @@
 <?php
 require_once __DIR__ . '/config.php';
 
-/* ---------- data ---------- */
+/* ---------- data ----------
+ * With DB_FILE set (Docker), everything is stored in SQLite: table `store` holds each dataset
+ * (content, articles, leads, ...) and `store_history` keeps previous versions of edited ones.
+ * The shipped data/*.json files are only the defaults until the first save.
+ * Without DB_FILE (shared hosting) the JSON files in data/ are used directly. */
+const HISTORY_SETS = ['content', 'articles', 'presentation', 'engine', 'admin'];
+const HISTORY_KEEP = 30;
+function db(): ?PDO {
+    static $pdo = false;
+    if ($pdo !== false) return $pdo;
+    $pdo = null;
+    if (DB_FILE === '' || !class_exists('PDO') || !in_array('sqlite', PDO::getAvailableDrivers(), true)) return null;
+    try {
+        $pdo = new PDO('sqlite:' . DB_FILE, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $pdo->exec('PRAGMA busy_timeout = 5000');
+        $pdo->exec('PRAGMA journal_mode = WAL');
+        $pdo->exec('CREATE TABLE IF NOT EXISTS store (name TEXT PRIMARY KEY, data TEXT NOT NULL, updated_at TEXT NOT NULL)');
+        $pdo->exec('CREATE TABLE IF NOT EXISTS store_history (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, data TEXT NOT NULL, saved_at TEXT NOT NULL)');
+        $pdo->exec('CREATE INDEX IF NOT EXISTS store_history_name ON store_history (name, id)');
+    } catch (Throwable $e) {
+        error_log('farvam: database unavailable, using JSON files: ' . $e->getMessage());
+        $pdo = null;
+    }
+    return $pdo;
+}
 function load_json(string $name, $default = []) {
+    if ($pdo = db()) {
+        $q = $pdo->prepare('SELECT data FROM store WHERE name = ?'); $q->execute([$name]);
+        $row = $q->fetchColumn();
+        if ($row !== false) { $d = json_decode((string)$row, true); return is_array($d) ? $d : $default; }
+    }
     $f = DATA_DIR . '/' . $name . '.json';
     if (!is_file($f)) return $default;
     $d = json_decode((string)file_get_contents($f), true);
     return is_array($d) ? $d : $default;
 }
 function save_json(string $name, $data): bool {
-    $f = DATA_DIR . '/' . $name . '.json';
     $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     if ($json === false) return false;
+    if ($pdo = db()) {
+        try {
+            $pdo->beginTransaction();
+            if (in_array($name, HISTORY_SETS, true)) {
+                $prev = json_encode(load_json($name, null), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if ($prev !== 'null') {
+                    $pdo->prepare('INSERT INTO store_history (name, data, saved_at) VALUES (?, ?, ?)')->execute([$name, $prev, date('c')]);
+                    $pdo->prepare('DELETE FROM store_history WHERE name = ? AND id NOT IN (SELECT id FROM store_history WHERE name = ? ORDER BY id DESC LIMIT ' . HISTORY_KEEP . ')')->execute([$name, $name]);
+                }
+            }
+            $pdo->prepare('INSERT INTO store (name, data, updated_at) VALUES (?, ?, ?) ON CONFLICT(name) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at')
+                ->execute([$name, $json, date('c')]);
+            $pdo->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            error_log('farvam: save failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+    $f = DATA_DIR . '/' . $name . '.json';
     if (is_file($f)) @copy($f, DATA_DIR . '/backup-' . $name . '.json');
     $tmp = $f . '.tmp';
     if (file_put_contents($tmp, $json, LOCK_EX) === false) return false;
     return rename($tmp, $f);
+}
+/* previous saved versions of a dataset, newest first: [[id, saved_at], ...] */
+function data_history(string $name): array {
+    if (!($pdo = db())) return [];
+    $q = $pdo->prepare('SELECT id, saved_at FROM store_history WHERE name = ? ORDER BY id DESC'); $q->execute([$name]);
+    return $q->fetchAll(PDO::FETCH_NUM);
+}
+function data_restore(string $name, int $id): bool {
+    if (!($pdo = db())) return false;
+    $q = $pdo->prepare('SELECT data FROM store_history WHERE name = ? AND id = ?'); $q->execute([$name, $id]);
+    $d = json_decode((string)$q->fetchColumn(), true);
+    return is_array($d) && save_json($name, $d);
 }
 function content(): array { static $c = null; if ($c === null) $c = load_json('content'); return $c; }
 function articles(bool $onlyPublished = true): array {

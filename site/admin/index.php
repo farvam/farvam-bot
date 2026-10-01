@@ -15,7 +15,7 @@ function csrf(): string { if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2
 function check_csrf(): void { if (!hash_equals($_SESSION['csrf'] ?? '', $_POST['csrf'] ?? '')) { http_response_code(400); exit('درخواست نامعتبر است. صفحه را دوباره باز کنید.'); } }
 function flash(?string $m = null) { if ($m !== null) { $_SESSION['flash'] = $m; return; } $f = $_SESSION['flash'] ?? ''; unset($_SESSION['flash']); return $f; }
 function go(string $q = ''): void { header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?') . ($q ? '?' . $q : '')); exit; }
-function writable_ok(): bool { return is_writable(DATA_DIR); }
+function writable_ok(): bool { return db() !== null || is_writable(DATA_DIR); }
 
 /* ---------- login throttle ---------- */
 function too_many(): bool {
@@ -79,6 +79,9 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $d = json_decode((string)($_POST['json'] ?? ''), true);
             if (!is_array($d)) { flash('JSON نامعتبر است؛ چیزی ذخیره نشد. خطا: ' . json_last_error_msg()); go("tab=$tab"); }
             flash(save_json($which, $d) ? 'ذخیره شد.' : 'ذخیره نشد.'); go("tab=$tab");
+        case 'restore':
+            $which = in_array($_POST['which'] ?? '', ['content', 'articles', 'engine', 'presentation'], true) ? $_POST['which'] : 'content';
+            flash(data_restore($which, (int)($_POST['version'] ?? 0)) ? 'نسخه انتخاب‌شده برگردانده شد.' : 'برگرداندن انجام نشد.'); go("tab=$tab");
         case 'save_article':
             $all = load_json('articles'); $orig = $_POST['orig_slug'] ?? '';
             $slug = trim(strtolower(preg_replace('/[^a-z0-9\-]+/i', '-', trim((string)$_POST['slug']))), '-');
@@ -415,13 +418,28 @@ function renum(fs){var path=fs.dataset.path.split('.'),base='f['+path.join('][')
 <?php elseif ($which === 'engine'): ?>
   <p>موتور توضیحات، متن معرفی را از کنار هم گذاشتن جمله‌های هر صنف با قالب‌های هر لحن می‌سازد. در بخش <code>roles</code> جمله‌های هر صنف و در بخش <code>tones</code> قالب‌های هر لحن را عوض یا اضافه کنید. در قالب‌ها از <code>{pain}</code>، <code>{agitate}</code>، <code>{after}</code>، <code>{feature}</code>، <code>{benefit}</code>، <code>{mechanism}</code>، <code>{role}</code>، <code>{roles}</code>، <code>{brand}</code> و <code>{offer}</code> استفاده کنید.</p>
 <?php else: ?>
-  <p>ویرایش مستقیم همه محتوای صفحه اصلی. برای افزودن یا حذف بخش، صنف یا ستون از اینجا استفاده کنید. قبل از هر ذخیره، یک نسخه پشتیبان خودکار در <code>data/backup-content.json</code> ساخته می‌شود.</p>
+  <p>ویرایش مستقیم همه محتوای صفحه اصلی. برای افزودن یا حذف بخش، صنف یا ستون از اینجا استفاده کنید. قبل از هر ذخیره، یک نسخه پشتیبان خودکار ساخته می‌شود<?= db() ? ' و ۳۰ نسخه آخر هر بخش در پایگاه داده نگه داشته می‌شود (پایین همین صفحه)' : ' (<code>data/backup-content.json</code>)' ?>.</p>
 <?php endif; ?>
   <form method="post"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="save_json"><input type="hidden" name="which" value="<?= $which ?>">
     <textarea name="json" class="code" spellcheck="false"><?= h(json_encode(load_json($which), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) ?></textarea>
     <div class="bar"><button class="btn btn-gold">ذخیره</button></div>
   </form>
 </div>
+<?php if ($tab === 'advanced' && db()): $sets = ['content' => 'متن‌ها، لینک‌ها و جای تصاویر', 'articles' => 'مقاله‌ها', 'presentation' => 'ارائه معرفی', 'engine' => 'موتور توضیحات']; ?>
+<div class="card">
+  <h3 style="margin-top:0">برگرداندن نسخه‌های قبلی</h3>
+  <p class="muted">هر بار که چیزی را ذخیره می‌کنید، نسخه قبلی در پایگاه داده نگه داشته می‌شود. اگر اشتباهی ذخیره شد، نسخه قبل را برگردانید.</p>
+  <?php foreach ($sets as $k => $label): $hist = data_history($k); ?>
+  <form method="post" class="bar" style="flex-wrap:wrap;gap:8px;align-items:center"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="restore"><input type="hidden" name="which" value="<?= $k ?>">
+    <b style="min-width:200px"><?= h($label) ?></b>
+    <?php if ($hist): ?>
+    <select name="version"><?php foreach ($hist as [$id, $at]): ?><option value="<?= (int)$id ?>"><?= h(jalali_label($at)) ?> <?= h(substr($at, 11, 5)) ?></option><?php endforeach; ?></select>
+    <button class="btn" onclick="return confirm('نسخه انتخاب‌شده جایگزین نسخه فعلی شود؟ (نسخه فعلی هم در فهرست می‌ماند)')">برگرداندن</button>
+    <?php else: ?><span class="muted">هنوز نسخه قبلی ندارد</span><?php endif; ?>
+  </form>
+  <?php endforeach; ?>
+</div>
+<?php endif; ?>
 
 <?php elseif ($tab === 'font'): $cf = glob(dirname(__DIR__) . '/assets/fonts/custom-display.*'); ?>
 <div class="card" style="max-width:640px">
@@ -445,6 +463,10 @@ function renum(fs){var path=fs.dataset.path.split('.'),base='f['+path.join('][')
   <label class="fld"><span>تکرار رمز جدید</span><input type="password" name="again" required minlength="10" autocomplete="new-password"></label>
   <button class="btn btn-gold">ذخیره رمز</button>
 </form>
+<div class="card" style="max-width:460px"><h3 style="margin-top:0">محل ذخیره اطلاعات</h3>
+  <?php if (db()): ?><p>✓ پایگاه داده SQLite فعال است. تنظیمات، متن‌ها، مقاله‌ها و درخواست‌ها در پایگاه داده ذخیره می‌شوند؛ عکس‌ها، ویدیوها و فایل‌ها در فضای ذخیره دائمی سرور. با به‌روزرسانی سایت چیزی پاک نمی‌شود.</p>
+  <?php else: ?><p>اطلاعات به صورت فایل در پوشه <code>data</code> ذخیره می‌شود.</p><?php endif; ?>
+</div>
 
 <?php else: ?>
 <div class="card">

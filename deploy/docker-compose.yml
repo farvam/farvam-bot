@@ -1,25 +1,34 @@
-name: farvam-site
+# panel-market: Farvam marketing site. Fully separate from the product container "farvam":
+# own project, container, image, network and volumes (all named panel-market*).
+# Default texts ship in the image (data/*.json); every edit is saved in the database volume.
+name: panel-market
 services:
-  web:
+  panel-market:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    image: farvam-site:latest
-    container_name: farvam-site
+    image: panel-market:latest
+    container_name: panel-market
+    hostname: panel-market
     restart: unless-stopped
     ports:
       - "127.0.0.1:8430:80"
     volumes:
-      # owner's edits survive updates (first start copies the shipped files in)
-      - farvam_data:/var/www/html/farvam/data
-      - farvam_images:/var/www/html/farvam/images
-      - farvam_files:/var/www/html/farvam/files
-      - farvam_fonts:/var/www/html/farvam/assets/fonts
+      # SQLite database: settings, texts, links, articles, image placements, leads, admin password
+      - db:/var/lib/panel-market
+      # uploaded images, videos/files and fonts (first start copies the shipped files in)
+      - images:/var/www/html/farvam/images
+      - files:/var/www/html/farvam/files
+      - fonts:/var/www/html/farvam/assets/fonts
+    networks: [panel-market]
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
+networks:
+  panel-market:
+    name: panel-market-net
 volumes:
-  farvam_data:
-  farvam_images:
-  farvam_files:
-  farvam_fonts:
+  db:     { name: panel-market-db }
+  images: { name: panel-market-images }
+  files:  { name: panel-market-files }
+  fonts:  { name: panel-market-fonts }

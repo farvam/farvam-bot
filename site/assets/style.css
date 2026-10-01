@@ -627,3 +627,9 @@ main>section:not(.hero):not(#offer){content-visibility:auto;contain-intrinsic-si
 :root:not([data-theme="dark"]) .voucher{background:linear-gradient(160deg,#FFFFFF,#F2F5FA)!important;color:#0E1424}
 :root:not([data-theme="dark"]) .voucher li span:first-child{color:#0E1424}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .voucher{background:linear-gradient(160deg,#152038,#0B1222)!important;color:#EEF2F8}:root:not([data-theme="light"]) .voucher li span:first-child{color:#EEF2F8}}
+
+/* ===== v6: no jump at the end of scrolling ===== */
+/* no elastic bounce / scroll chaining at the top and bottom of the page */
+html,body{overscroll-behavior-y:none}
+/* the galaxy layer keeps the large-viewport height, so the address bar showing/hiding doesn't resize it */
+#galaxy{height:100vh;height:100lvh;bottom:auto}

@@ -33,7 +33,7 @@ $svg = fn($k) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <meta property="og:title" content="معرفی تعاملی فَروَم"><meta property="og:image" content="<?= h(abs_url(c('seo.og_image'))) ?>">
 <meta name="color-scheme" content="dark"><meta name="theme-color" content="#060910">
 <link rel="icon" href="<?= $b ?>images/logo-mark-gold.png">
-<link rel="stylesheet" href="<?= $b ?>assets/style.css?v=5">
+<link rel="stylesheet" href="<?= $b ?>assets/style.css?v=<?= asset_v('style.css') ?>">
 <style>
 :root{color-scheme:dark;--bg:#060910;--text:#EEF2F8;--muted:#A3AEC2;--gold:#FFC84A;--teal:#2EF2D0;--rose:#FF6B8B;--card:rgba(255,255,255,.06);--edge:rgba(255,255,255,.12)}
 html,body{height:100%}

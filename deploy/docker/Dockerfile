@@ -23,7 +23,8 @@ RUN printf '<?php header("Location: /farvam/", true, 302);\n' > /var/www/html/in
  && mkdir -p /opt/panel-market/defaults/assets \
  && cp -a /var/www/html/farvam/images /var/www/html/farvam/files /opt/panel-market/defaults/ \
  && cp -a /var/www/html/farvam/assets/fonts /opt/panel-market/defaults/assets/ \
- && chmod 755 /opt/panel-market/entrypoint.sh
+ && chmod 755 /opt/panel-market/entrypoint.sh \
+ && date +%s > /opt/panel-market/built-at
 
 # SQLite database (settings, texts, articles, leads); its own volume, outside the web root
 ENV FARVAM_DB=/var/lib/panel-market/panel-market.sqlite

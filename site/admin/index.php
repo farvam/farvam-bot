@@ -79,6 +79,15 @@ if ($authed && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $d = json_decode((string)($_POST['json'] ?? ''), true);
             if (!is_array($d)) { flash('JSON نامعتبر است؛ چیزی ذخیره نشد. خطا: ' . json_last_error_msg()); go("tab=$tab"); }
             flash(save_json($which, $d) ? 'ذخیره شد.' : 'ذخیره نشد.'); go("tab=$tab");
+        case 'update_check':
+            require_once dirname(__DIR__) . '/updater.php';
+            try { $_SESSION['upd_latest'] = upd_latest(); } catch (Throwable $e) { flash($e->getMessage()); }
+            go('tab=update');
+        case 'update_apply':
+        case 'update_rollback':
+            require_once dirname(__DIR__) . '/updater.php';
+            try { flash($act === 'update_apply' ? upd_apply() : upd_rollback()); } catch (Throwable $e) { flash('به‌روزرسانی انجام نشد: ' . $e->getMessage()); }
+            unset($_SESSION['upd_latest']); go('tab=update');
         case 'restore':
             $which = in_array($_POST['which'] ?? '', ['content', 'articles', 'engine', 'presentation'], true) ? $_POST['which'] : 'content';
             flash(data_restore($which, (int)($_POST['version'] ?? 0)) ? 'نسخه انتخاب‌شده برگردانده شد.' : 'برگرداندن انجام نشد.'); go("tab=$tab");
@@ -275,7 +284,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 <header>
   <b>پنل مدیریت فَروَم</b>
   <nav>
-    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'placements' => 'جای تصاویر', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'media' => 'ویدیو و فایل', 'present' => 'ارائه معرفی', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'help' => 'راهنما'] as $k => $v): ?>
+    <?php foreach (['leads' => 'درخواست‌ها', 'content' => 'متن‌ها و لینک‌ها', 'articles' => 'مقاله‌ها', 'placements' => 'جای تصاویر', 'images' => 'تصاویر', 'font' => 'فونت تیترها', 'media' => 'ویدیو و فایل', 'present' => 'ارائه معرفی', 'engine' => 'موتور توضیحات', 'advanced' => 'ویرایش پیشرفته', 'security' => 'امنیت', 'update' => 'به‌روزرسانی', 'help' => 'راهنما'] as $k => $v): ?>
     <a href="?tab=<?= $k ?>" class="<?= $tab === $k ? 'on' : '' ?>"><?= $v ?></a>
     <?php endforeach; ?>
     <a href="<?= h(url_home()) ?>" target="_blank">مشاهده سایت ↗</a>
@@ -455,6 +464,24 @@ function renum(fs){var path=fs.dataset.path.split('.'),base='f['+path.join('][')
 <?php endif; ?>
 </div>
 
+<?php elseif ($tab === 'update'): require_once dirname(__DIR__) . '/updater.php'; $ui = upd_info(); $lt = $_SESSION['upd_latest'] ?? null;
+  $ver = fn($sha, $date) => $sha ? h(jalali_label($date)) . ' ' . h(substr((string)$date, 11, 5)) . ' <code dir="ltr">' . h(substr($sha, 0, 7)) . '</code>' : 'نسخه نصب‌شده با فایل نصب'; ?>
+<div class="card" style="max-width:760px">
+  <h3 style="margin-top:0">به‌روزرسانی سایت</h3>
+  <p>با این دکمه آخرین نسخه سایت از گیت‌هاب گرفته و نصب می‌شود. <b>فقط فایل‌های برنامه عوض می‌شوند</b>؛ متن‌ها و تنظیمات، مقاله‌ها، درخواست‌ها، رمز پنل، عکس‌ها، ویدیوها و فایل‌هایی که بارگذاری کرده‌اید دست نمی‌خورند. قبل از نصب، نسخه فعلی نگه داشته می‌شود تا اگر لازم شد با یک کلیک برگردد.</p>
+  <p>نسخه فعلی: <?= $ver($ui['sha'] ?? '', $ui['date'] ?? '') ?><?= !empty($ui['at']) ? ' <span class="muted">(نصب: ' . h(jalali_label($ui['at'])) . ')</span>' : '' ?></p>
+  <?php if ($lt): $same = ($ui['sha'] ?? '') === $lt['sha']; ?>
+  <p>آخرین نسخه در گیت‌هاب: <?= $ver($lt['sha'], $lt['date']) ?> — <?= h($lt['message']) ?><br><b style="color:<?= $same ? 'var(--ok,#1a7f4b)' : 'var(--gold,#b8860b)' ?>"><?= $same ? '✓ سایت به‌روز است.' : 'نسخه جدید آماده نصب است.' ?></b></p>
+  <?php endif; ?>
+  <div class="bar" style="flex-wrap:wrap;gap:8px">
+    <form method="post"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="update_check"><button class="btn">بررسی نسخه جدید</button></form>
+    <form method="post" onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='در حال به‌روزرسانی… (تا ۱ دقیقه)';return true"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="update_apply"><button class="btn btn-gold">به‌روزرسانی</button></form>
+    <?php if (upd_can_rollback()): ?>
+    <form method="post" onsubmit="return confirm('نسخه قبلی برنامه برگردد؟ اطلاعات شما تغییری نمی‌کند.')"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="update_rollback"><button class="btn">بازگشت به نسخه قبل</button></form>
+    <?php endif; ?>
+  </div>
+  <p class="muted" style="margin-top:14px">تغییرات سرور (داکر، Caddy) با این دکمه نصب نمی‌شوند؛ برای آن‌ها فایل نصب (deploy-panel-market.bat) لازم است. پشتیبان کامل شبانه هم جداگانه گرفته می‌شود.</p>
+</div>
 <?php elseif ($tab === 'security'): ?>
 <form method="post" class="card" style="max-width:460px"><input type="hidden" name="csrf" value="<?= csrf() ?>"><input type="hidden" name="act" value="password">
   <h3 style="margin-top:0">تغییر رمز پنل</h3>

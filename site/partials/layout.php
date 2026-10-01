@@ -47,7 +47,7 @@ function page_start(array $m): void {
 <link rel="apple-touch-icon" href="<?= $b ?>images/logo-coin.png">
 <link rel="preload" href="<?= $b ?>assets/fonts/vazirmatn-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="<?= $b ?>assets/fonts/nastaliq-bold.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="<?= $b ?>assets/style.css?v=4">
+<link rel="stylesheet" href="<?= $b ?>assets/style.css?v=<?= asset_v('style.css') ?>">
 <?php $cf = glob(__DIR__ . '/../assets/fonts/custom-display.*'); if ($cf): $ext = pathinfo($cf[0], PATHINFO_EXTENSION); $fmt = ['woff2' => 'woff2', 'woff' => 'woff', 'ttf' => 'truetype', 'otf' => 'opentype'][$ext] ?? 'truetype'; ?>
 <style>@font-face{font-family:"Farvam Custom";src:url(<?= $b ?>assets/fonts/custom-display.<?= h($ext) ?>?<?= filemtime($cf[0]) ?>) format("<?= $fmt ?>");font-display:swap}:root{--display:"Farvam Custom","Farvam Nastaliq","Vazirmatn",Tahoma,serif}</style>
 <?php endif; ?>
@@ -157,7 +157,7 @@ function page_end(bool $withEngine = false): void {
 </footer>
 </div>
 <script>window.FARVAM=<?= json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?>;</script>
-<script src="<?= $b ?>assets/app.js?v=4" defer></script>
+<script src="<?= $b ?>assets/app.js?v=<?= asset_v('app.js') ?>" defer></script>
 </body>
 </html>
 <?php

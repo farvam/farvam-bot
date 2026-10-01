@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+if (!defined('DB_FILE')) define('DB_FILE', (string)getenv('FARVAM_DB'));
 
 /* ---------- data ----------
  * With DB_FILE set (Docker), everything is stored in SQLite: table `store` holds each dataset
@@ -196,3 +197,5 @@ function video_embed(string $url, string $title = ''): string {
 function videos_for(?string $role = null): array {
     return array_values(array_filter((array)c('videos.items'), fn($v) => trim($v['url'] ?? '') !== '' && ($role === null || ($v['role'] ?? '') === $role || ($role === '' && ($v['role'] ?? '') === ''))));
 }
+/* cache-busting version for assets/<file> (changes whenever the file is updated) */
+function asset_v(string $file): string { return (string)(@filemtime(__DIR__ . '/assets/' . $file) ?: 1); }

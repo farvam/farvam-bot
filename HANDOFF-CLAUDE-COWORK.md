@@ -139,6 +139,10 @@ network `panel-market-net`. It is fully separate from the owner's product contai
 - **Backups:** `bash /opt/panel-market/backup.sh` → `/opt/panel-market/backups/*.tar.gz`
   (DB snapshot via `VACUUM INTO` + media, newest 7 kept). Restore:
   `bash /opt/panel-market/restore.sh <file>`. Never run `docker compose down -v`.
+- **Code updates without the installer:** admin → «به‌روزرسانی» downloads the latest
+  `site/` from GitHub (`farvam/farvam-bot`, branch set in `site/updater.php`), lints it,
+  keeps the previous code for one-click rollback and never touches DB/media. The applied code is
+  kept in the DB volume and re-applied by the entrypoint unless a newer image is installed.
 - Logs: `docker logs -f panel-market`. Remove the route: delete the `import` line from the
   Caddyfile and `systemctl reload caddy`.
 
@@ -189,7 +193,8 @@ When deploying a newer package, overwrite **code only** (`*.php`, `partials/`, `
 ## 9. Credentials
 
 - Admin URL: `https://farvamcertification.ir/farvam/admin/`
-- Initial password: `Farvam-GzvYPnHw73` — change immediately after first login.
+- Initial password: given to the owner privately (never write it in this public repo); it must be
+  changed in «امنیت» after the first login. The new password is stored only as a bcrypt hash in the database.
 
 ## 10. Content the owner still needs to supply (hidden on the site until filled in admin)
 

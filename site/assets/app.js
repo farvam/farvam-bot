@@ -57,7 +57,10 @@
       if(p.s>1.55&&tw>.85){ctx.fillStyle="rgba("+col+","+(al*.25).toFixed(3)+")";ctx.beginPath();ctx.arc(x,y,p.s*3.2,0,6.283);ctx.fill()}
     }
   }
-  build(); addEventListener("resize",function(){build();if(still)frame(performance.now())});
+  build();
+  // phones resize the viewport when the address bar shows/hides (often at the end of a scroll);
+  // rebuilding then re-randomised the galaxy and looked like a jump. Rebuild only on real width changes.
+  var lastW=innerWidth; addEventListener("resize",function(){if(Math.abs(innerWidth-lastW)<2)return;lastW=innerWidth;build();if(still)frame(performance.now())});
   if(still){frame(performance.now());new MutationObserver(function(){frame(performance.now())}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]})}
   else raf=requestAnimationFrame(loop);
 })();

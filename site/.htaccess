@@ -20,6 +20,6 @@ DirectoryIndex index.php index.html
   ExpiresByType text/css "access plus 7 days"
   ExpiresByType application/javascript "access plus 7 days"
 </IfModule>
-<FilesMatch "^(config|lib|build-static)\.php$">
+<FilesMatch "^(config|lib|build-static|updater)\.php$">
   Require all denied
 </FilesMatch>
